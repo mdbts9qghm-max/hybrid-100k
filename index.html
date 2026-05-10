@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HYBRID 100K">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0e1a">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a0e1a'/><text x='90' y='118' font-family='Arial Black,sans-serif' font-size='62' font-weight='900' fill='%23ff1f3d' text-anchor='middle'>100</text><text x='90' y='160' font-family='Arial,sans-serif' font-size='22' font-weight='800' fill='%23ffd400' text-anchor='middle' letter-spacing='4'>HYBRID</text></svg>">
+<title>HYBRID 100K — Schicht-Baukasten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;800&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e1a;
+    --bg-2:#0f1424;
+    --bg-3:#151b2e;
+    --panel:#11172a;
+    --panel-line:#1e2742;
+    --ink:#e9eef7;
+    --ink-dim:#8e98b3;
+    --ink-mute:#5a6483;
+    --accent:#ff1f3d;        /* Red Bull rot */
+    --accent-2:#ffd400;      /* Bull gelb */
+    --accent-3:#1d4ed8;      /* tiefes Blau */
+    --good:#22c55e;
+    --warn:#f59e0b;
+    --bad:#ef4444;
+    --grid: rgba(255,255,255,0.04);
+    --shadow: 0 30px 80px -20px rgba(255,31,61,0.15), 0 10px 30px -10px rgba(0,0,0,0.6);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-weight:400;line-height:1.55;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+  body{
+    background:
+      radial-gradient(1000px 600px at 90% -10%, rgba(255,31,61,0.12), transparent 60%),
+      radial-gradient(800px 500px at -10% 30%, rgba(29,78,216,0.18), transparent 60%),
+      linear-gradient(180deg, #080b15 0%, #0a0e1a 100%);
+    min-height:100vh;
+    background-attachment: fixed;
+    overscroll-behavior-y: contain;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at 50% 30%, black 30%, transparent 80%);
+  }
+  .wrap{
+    max-width:1280px;margin:0 auto;
+    padding: 20px max(16px, env(safe-area-inset-left)) 100px max(16px, env(safe-area-inset-right));
+    position:relative;z-index:1
+  }
+  @media (min-width:768px){
+    .wrap{padding:32px 24px 80px}
+  }
+
+/* ===== HEADER ===== */
+header{
+border:1px solid var(–panel-line);
+background:linear-gradient(135deg, rgba(255,31,61,0.08), rgba(29,78,216,0.05));
+border-radius:20px;
+padding:24px 22px;
+position:relative;
+overflow:hidden;
+}
+@media (min-width:768px){
+header{border-radius:24px;padding:32px 36px}
+}
+header::before{
+content:‘100’;position:absolute;right:-20px;top:-40px;
+font-family:‘Bebas Neue’;font-size:14rem;line-height:1;color:rgba(255,31,61,0.07);letter-spacing:-0.05em;
+pointer-events:none;
+}
+@media (min-width:768px){
+header::before{right:-30px;top:-60px;font-size:22rem}
+}
+.eyebrow{display:flex;align-items:center;gap:10px;font-family:‘JetBrains Mono’;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(–ink-dim)}
+.eyebrow .dot{width:8px;height:8px;background:var(–accent);border-radius:50%;box-shadow:0 0 16px var(–accent);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+h1{font-family:‘Bebas Neue’;font-size:clamp(48px,12vw,108px);line-height:0.92;letter-spacing:-0.01em;margin-top:14px}
+h1 .red{color:var(–accent)}
+h1 .yel{color:var(–accent-2)}
+.sub{margin-top:14px;color:var(–ink-dim);max-width:680px;font-size:14.5px;line-height:1.55}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;background:rgba(255,255,255,0.04);border:1px solid var(–panel-line);padding:7px 10px;border-radius:999px;color:var(–ink-dim)}
+@media (min-width:768px){
+.chip{font-size:11px;padding:8px 12px}
+.meta{gap:10px;margin-top:22px}
+}
+.chip strong{color:var(–ink)}
+
+/* ===== TABS ===== */
+.tabs{
+display:flex;gap:4px;
+margin:18px -16px 16px;
+padding:6px;
+background:var(–panel);border:1px solid var(–panel-line);
+border-radius:0;
+position:sticky;top:0;z-index:30;
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+overflow-x:auto;overflow-y:hidden;
+scroll-snap-type:x proximity;
+-webkit-overflow-scrolling:touch;
+scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+@media (min-width:768px){
+.tabs{
+flex-wrap:wrap;gap:6px;
+margin:28px 0 20px;
+border-radius:14px;top:12px;
+overflow:visible;
+}
+}
+.tab{
+flex:0 0 auto;
+min-width:auto;
+padding:14px 16px;
+font-family:‘JetBrains Mono’;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+color:var(–ink-dim);background:transparent;border:0;border-radius:9px;cursor:pointer;
+transition:all .2s;
+display:flex;align-items:center;gap:8px;
+white-space:nowrap;
+scroll-snap-align:start;
+min-height:44px;
+}
+@media (min-width:768px){
+.tab{flex:1;justify-content:center;min-width:120px;padding:12px 14px}
+}
+.tab:hover{color:var(–ink);background:rgba(255,255,255,0.03)}
+.tab.active{background:linear-gradient(135deg,var(–accent),#cc1530);color:#fff;box-shadow:0 8px 24px -8px var(–accent)}
+.tab-num{font-weight:800;opacity:.6}
+.tab.active .tab-num{opacity:1}
+
+.panel{display:none;animation:fadeIn .35s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ===== CARDS / SECTIONS ===== */
+.card{background:var(–panel);border:1px solid var(–panel-line);border-radius:16px;padding:20px;margin-bottom:14px}
+@media (min-width:768px){
+.card{border-radius:18px;padding:26px;margin-bottom:18px}
+}
+.card h2{font-family:‘Bebas Neue’;font-size:26px;letter-spacing:0.02em;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+@media (min-width:768px){
+.card h2{font-size:32px;gap:12px}
+}
+.card h2 .bar{width:5px;height:22px;background:var(–accent);border-radius:2px}
+@media (min-width:768px){
+.card h2 .bar{width:6px;height:26px}
+}
+.card h3{font-family:‘Bebas Neue’;font-size:20px;letter-spacing:0.02em;margin:18px 0 10px;color:var(–ink)}
+@media (min-width:768px){
+.card h3{font-size:22px}
+}
+.card p{color:var(–ink-dim);font-size:14.5px;margin-bottom:8px}
+.card p strong{color:var(–ink)}
+
+/* ===== BAUKASTEN ===== */
+.builder-head{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:16px}
+@media (min-width:768px){
+.builder-head{grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+}
+.input-block{background:var(–bg-3);border:1px solid var(–panel-line);border-radius:12px;padding:14px}
+@media (min-width:768px){
+.input-block{border-radius:14px;padding:18px}
+}
+.input-block label{display:block;font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(–ink-dim);margin-bottom:8px}
+.input-block select, .input-block input{
+width:100%;background:var(–bg-2);border:1px solid var(–panel-line);
+color:var(–ink);font-family:‘Inter’;font-size:16px;font-weight:500; /* 16px = kein iOS-Zoom */
+padding:13px 14px;border-radius:10px;outline:none;transition:border-color .2s;
+-webkit-appearance:none;appearance:none;
+min-height:44px; /* Apple HIG Touch-Target */
+}
+.input-block select{
+background-image: url(“data:image/svg+xml;charset=utf-8,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%238e98b3’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”);
+background-repeat:no-repeat;background-position:right 14px center;background-size:12px;
+padding-right:36px;
+}
+.input-block select:focus, .input-block input:focus{border-color:var(–accent)}
+
+/* Wochengrid: 1 Spalte auf Mobile, 7 Spalten ab Tablet */
+.week-grid{
+display:grid;
+grid-template-columns:1fr;
+gap:10px;margin:14px 0 6px
+}
+@media (min-width:640px){
+.week-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (min-width:1024px){
+.week-grid{grid-template-columns:repeat(7,1fr);gap:8px}
+}
+.day-card{background:var(–bg-3);border:1px solid var(–panel-line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:auto}
+@media (min-width:1024px){
+.day-card{padding:12px;gap:8px;min-height:120px}
+}
+/* Mobile: Tag-Header horizontal, mit Schicht-Select daneben */
+@media (max-width:1023px){
+.day-card{display:grid;grid-template-columns:48px 1fr;grid-template-rows:auto auto;gap:10px 12px;align-items:center}
+.day-card .dn{
+grid-row:1 / span 2;
+font-family:‘Bebas Neue’;font-size:24px;letter-spacing:0.04em;color:var(–accent);
+text-align:center;line-height:1
+}
+.day-card select{grid-column:2}
+.day-card .out{grid-column:1 / -1}
+}
+.day-card .dn{font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.2em;color:var(–ink-mute);text-transform:uppercase}
+.day-card select{
+width:100%;background:var(–bg-2);border:1px solid var(–panel-line);
+color:var(–ink);font-family:‘Inter’;font-size:14px;font-weight:600;
+padding:11px 12px;border-radius:8px;outline:none;cursor:pointer;
+-webkit-appearance:none;appearance:none;
+background-image: url(“data:image/svg+xml;charset=utf-8,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%238e98b3’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”);
+background-repeat:no-repeat;background-position:right 12px center;background-size:10px;
+padding-right:30px;min-height:44px;
+}
+@media (min-width:1024px){
+.day-card select{font-size:12px;padding:8px 10px;min-height:auto}
+}
+.day-card .out{font-family:‘JetBrains Mono’;font-size:12px;line-height:1.5;color:var(–ink);background:rgba(255,31,61,0.06);border-left:3px solid var(–accent);padding:10px 12px;border-radius:6px;min-height:60px;white-space:pre-wrap}
+@media (min-width:1024px){
+.day-card .out{font-size:11px;padding:8px 10px;min-height:50px}
+}
+.day-card.rest .out{border-left-color:var(–accent-3);background:rgba(29,78,216,0.06)}
+.day-card.long .out{border-left-color:var(–accent-2);background:rgba(255,212,0,0.06)}
+.day-card.strength .out{border-left-color:#a855f7;background:rgba(168,85,247,0.06)}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.legend span{font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(–ink-dim);display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+.summary{margin-top:16px;padding:16px;background:var(–bg-3);border:1px solid var(–panel-line);border-radius:14px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media (min-width:768px){
+.summary{grid-template-columns:repeat(4,1fr);padding:18px}
+}
+.stat .lbl{font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(–ink-dim)}
+.stat .val{font-family:‘Bebas Neue’;font-size:34px;line-height:1;margin-top:4px;color:var(–ink)}
+@media (min-width:768px){
+.stat .val{font-size:38px}
+}
+.stat .val .unit{font-family:‘JetBrains Mono’;font-size:12px;color:var(–ink-dim);margin-left:4px;letter-spacing:.1em}
+
+/* ===== AUTO-STATUS ===== */
+.auto-status{
+background:linear-gradient(135deg, rgba(255,31,61,0.06), rgba(29,78,216,0.04));
+border:1px solid rgba(255,31,61,0.2);
+border-radius:14px;
+padding:18px;
+margin-bottom:16px;
+}
+.auto-row{
+display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px;
+}
+@media (min-width:768px){
+.auto-row{grid-template-columns:repeat(4,1fr)}
+}
+.auto-block{
+background:rgba(0,0,0,0.25);border:1px solid var(–panel-line);
+border-radius:10px;padding:12px 14px;
+}
+.auto-lbl{
+font-family:‘JetBrains Mono’;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+color:var(–ink-dim);margin-bottom:4px;
+}
+.auto-val{
+font-family:‘Bebas Neue’;font-size:24px;line-height:1.1;letter-spacing:0.02em;color:var(–ink);
+}
+.auto-val.accent{color:var(–accent)}
+.auto-val.yellow{color:var(–accent-2)}
+.auto-val.purple{color:#a855f7}
+.auto-val.green{color:var(–good)}
+.progress-bar{
+height:6px;background:rgba(0,0,0,0.4);border-radius:3px;overflow:hidden;margin-bottom:12px;
+}
+.progress-fill{
+height:100%;background:linear-gradient(90deg,var(–accent),var(–accent-2));
+border-radius:3px;width:0;transition:width .6s cubic-bezier(.4,0,.2,1);
+}
+.auto-meta{
+display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+font-size:13px;color:var(–ink-dim);
+}
+.manual-toggle{
+background:transparent;border:1px solid var(–panel-line);
+color:var(–ink-dim);font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+padding:8px 12px;border-radius:8px;cursor:pointer;transition:all .15s;min-height:36px;
+}
+.manual-toggle:hover{color:var(–ink);border-color:var(–accent)}
+.manual-toggle.active{background:var(–accent);color:#fff;border-color:var(–accent)}
+
+/* ===== TABLES ===== */
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+@media (min-width:768px){
+table{display:table;font-size:14px;white-space:normal}
+}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(–panel-line)}
+th{font-family:‘JetBrains Mono’;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(–ink-dim);font-weight:600;background:var(–bg-3)}
+td{color:var(–ink)}
+td.muted{color:var(–ink-dim)}
+tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* ===== PHASES TIMELINE ===== */
+.timeline{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
+@media (min-width:640px){
+.timeline{grid-template-columns:repeat(2,1fr)}
+}
+@media (min-width:1024px){
+.timeline{grid-template-columns:repeat(4,1fr)}
+}
+.phase{background:var(–bg-3);border:1px solid var(–panel-line);border-radius:14px;padding:18px;position:relative;overflow:hidden}
+.phase::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px;background:var(–accent)}
+.phase.p2::before{background:var(–accent-2)}
+.phase.p3::before{background:#a855f7}
+.phase.p4::before{background:var(–good)}
+.phase .ph-num{font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.25em;color:var(–ink-dim);text-transform:uppercase}
+.phase h4{font-family:‘Bebas Neue’;font-size:24px;letter-spacing:0.02em;margin:6px 0 10px}
+.phase ul{list-style:none;margin-top:8px}
+.phase li{font-size:13px;color:var(–ink-dim);padding:5px 0;border-bottom:1px dashed rgba(255,255,255,0.05);display:flex;gap:8px}
+.phase li::before{content:’›’;color:var(–accent);font-weight:800}
+.phase li:last-child{border-bottom:0}
+
+/* ===== TRACKER FORMS ===== */
+.tracker-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media (min-width:768px){
+.tracker-grid{grid-template-columns:repeat(3,1fr)}
+}
+.tracker-grid .input-block{padding:12px}
+.tracker-grid .input-block input{font-family:‘JetBrains Mono’;font-size:16px}
+.check-list{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+@media (min-width:640px){
+.check-list{grid-template-columns:repeat(2,1fr)}
+}
+.check{display:flex;align-items:center;gap:12px;background:var(–bg-3);border:1px solid var(–panel-line);padding:14px 14px;border-radius:10px;cursor:pointer;transition:all .15s;font-size:14px;min-height:50px}
+.check:hover{border-color:var(–accent)}
+.check input{accent-color:var(–accent);width:20px;height:20px;cursor:pointer;flex-shrink:0}
+.check input:checked + span{color:var(–ink-mute);text-decoration:line-through}
+
+/* ===== TRACKER (Heute-Fokus) ===== */
+.today-card{
+background:linear-gradient(135deg, var(–panel) 0%, rgba(255,31,61,0.04) 100%);
+border-color:rgba(255,31,61,0.25);
+position:relative;overflow:hidden;
+}
+.today-card::before{
+content:’’;position:absolute;top:0;left:0;right:0;height:3px;
+background:linear-gradient(90deg,var(–accent),var(–accent-2));
+}
+.today-head{
+display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+margin-bottom:18px;
+}
+.today-eyebrow{
+font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+color:var(–ink-dim);margin-bottom:6px;
+}
+.today-eyebrow span{color:var(–accent-2)}
+.today-streak{
+display:flex;flex-direction:column;align-items:center;
+background:rgba(0,0,0,0.3);border:1px solid var(–panel-line);
+padding:8px 14px;border-radius:12px;min-width:64px;
+}
+.streak-flame{font-size:18px;line-height:1}
+.streak-num{
+font-family:‘Bebas Neue’;font-size:28px;line-height:1;color:var(–accent-2);margin-top:2px;
+}
+.streak-lbl{
+font-family:‘JetBrains Mono’;font-size:9px;letter-spacing:0.15em;
+color:var(–ink-dim);text-transform:uppercase;margin-top:2px;
+}
+
+.today-grid{
+display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;
+}
+@media (min-width:640px){
+.today-grid{grid-template-columns:1fr 1fr 2fr}
+}
+.today-field-wide{grid-column:1 / -1}
+@media (min-width:640px){
+.today-field-wide{grid-column:auto}
+}
+.today-field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.today-field label{
+font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+color:var(–ink-dim);
+}
+.today-input-wrap{position:relative}
+.today-input-wrap input{
+width:100%;background:var(–bg-2);border:1px solid var(–panel-line);
+color:var(–ink);font-family:‘Bebas Neue’;font-size:32px;letter-spacing:0.02em;
+padding:14px 50px 14px 16px;border-radius:12px;outline:none;
+transition:border-color .2s;-webkit-appearance:none;min-height:64px;
+}
+.today-input-wrap input:focus{border-color:var(–accent)}
+.today-unit{
+position:absolute;right:16px;top:50%;transform:translateY(-50%);
+font-family:‘JetBrains Mono’;font-size:13px;color:var(–ink-dim);letter-spacing:0.1em;
+pointer-events:none;
+}
+.today-field select{
+width:100%;background:var(–bg-2);border:1px solid var(–panel-line);
+color:var(–ink);font-family:‘Inter’;font-size:16px;font-weight:600;
+padding:18px 36px 18px 16px;border-radius:12px;outline:none;cursor:pointer;
+-webkit-appearance:none;appearance:none;min-height:64px;
+background-image: url(“data:image/svg+xml;charset=utf-8,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%238e98b3’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”);
+background-repeat:no-repeat;background-position:right 14px center;background-size:12px;
+}
+.today-field select:focus{border-color:var(–accent)}
+.today-field textarea{
+background:var(–bg-2);font-size:16px;padding:14px 16px;min-height:90px;
+}
+.today-actions{
+display:flex;align-items:center;gap:14px;margin-top:6px;flex-wrap:wrap;
+}
+.today-actions .save-btn{margin-top:0}
+.save-status{
+font-family:‘JetBrains Mono’;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;
+color:var(–good);opacity:0;transition:opacity .3s;
+}
+.save-status.show{opacity:1}
+
+/* AVERAGES */
+.averages-card{padding:18px}
+.averages-grid{
+display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+}
+.avg-box{
+background:var(–bg-3);border:1px solid var(–panel-line);
+padding:14px 12px;border-radius:10px;text-align:center;
+}
+.avg-lbl{
+font-family:‘JetBrains Mono’;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+color:var(–ink-dim);margin-bottom:4px;
+}
+.avg-val{
+font-family:‘Bebas Neue’;font-size:28px;line-height:1;color:var(–ink);
+}
+.avg-unit{font-family:‘JetBrains Mono’;font-size:11px;color:var(–ink-dim);letter-spacing:0.1em}
+
+/* HISTORY */
+.history-head{
+display:flex;justify-content:space-between;align-items:center;
+margin-bottom:14px;gap:12px;flex-wrap:wrap;
+}
+.history-list{display:flex;flex-direction:column;gap:8px}
+.history-empty{
+text-align:center;padding:32px 20px;color:var(–ink-mute);
+font-family:‘JetBrains Mono’;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;
+border:1px dashed var(–panel-line);border-radius:12px;
+}
+.history-row{
+display:grid;grid-template-columns:60px 1fr auto;gap:10px;
+background:var(–bg-3);border:1px solid var(–panel-line);
+padding:12px 14px;border-radius:10px;align-items:center;
+transition:border-color .15s;position:relative;
+}
+.history-row:hover{border-color:var(–accent)}
+.history-date{
+font-family:‘Bebas Neue’;font-size:18px;letter-spacing:0.02em;
+color:var(–accent);line-height:1;
+}
+.history-date small{
+display:block;font-family:‘JetBrains Mono’;font-size:9px;
+color:var(–ink-mute);letter-spacing:0.15em;text-transform:uppercase;margin-top:2px;
+}
+.history-data{
+display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;font-size:13px;
+}
+.history-data span{display:flex;align-items:center;gap:5px;color:var(–ink-dim)}
+.history-data span strong{color:var(–ink);font-family:‘JetBrains Mono’;font-weight:600}
+.history-shift{
+font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+background:rgba(255,31,61,0.1);color:var(–accent);
+padding:3px 8px;border-radius:6px;border:1px solid rgba(255,31,61,0.2);
+}
+.history-shift.frei{background:rgba(34,197,94,0.1);color:var(–good);border-color:rgba(34,197,94,0.2)}
+.history-shift.nacht{background:rgba(168,85,247,0.1);color:#a855f7;border-color:rgba(168,85,247,0.2)}
+.history-shift.schlaf{background:rgba(29,78,216,0.1);color:#60a5fa;border-color:rgba(29,78,216,0.2)}
+.history-shift.v{background:rgba(245,158,11,0.1);color:var(–warn);border-color:rgba(245,158,11,0.2)}
+.history-note{
+grid-column:1 / -1;color:var(–ink-dim);font-size:13px;line-height:1.45;
+padding-top:8px;margin-top:4px;border-top:1px dashed var(–panel-line);
+font-style:italic;
+}
+.history-del{
+background:transparent;border:0;color:var(–ink-mute);cursor:pointer;
+width:32px;height:32px;border-radius:6px;font-size:18px;line-height:1;
+transition:all .15s;display:flex;align-items:center;justify-content:center;
+}
+.history-del:hover{color:var(–bad);background:rgba(239,68,68,0.08)}
+
+/* ===== BACKUP BANNER ===== */
+.backup-banner{
+display:flex;align-items:center;gap:12px;
+background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(255,31,61,0.1));
+border:1px solid rgba(245,158,11,0.4);
+border-radius:14px;padding:14px 16px;margin-bottom:14px;
+animation:slideIn .4s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.backup-banner.urgent{
+background:linear-gradient(135deg, rgba(239,68,68,0.18), rgba(245,158,11,0.1));
+border-color:rgba(239,68,68,0.5);
+animation:slideIn .4s cubic-bezier(.4,0,.2,1), pulseGlow 2s infinite;
+}
+@keyframes pulseGlow{
+0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}
+50%{box-shadow:0 0 0 6px rgba(239,68,68,0.08)}
+}
+.backup-icon{font-size:24px;flex-shrink:0;line-height:1}
+.backup-content{flex:1;min-width:0}
+.backup-title{
+font-family:‘Bebas Neue’;font-size:18px;letter-spacing:0.02em;color:var(–ink);
+line-height:1.1;margin-bottom:2px;
+}
+.backup-desc{
+font-size:12.5px;color:var(–ink-dim);line-height:1.4;
+}
+.backup-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.backup-btn{
+background:transparent;border:1px solid var(–panel-line);color:var(–ink);
+font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+padding:9px 12px;border-radius:8px;cursor:pointer;transition:all .15s;
+min-height:38px;font-weight:700;
+}
+.backup-btn.primary{background:var(–accent-2);color:#0a0e1a;border-color:var(–accent-2)}
+.backup-btn.primary:hover{background:#fff;border-color:#fff}
+.backup-btn.ghost{padding:9px 11px;color:var(–ink-dim);min-width:38px;justify-content:center;display:inline-flex;align-items:center}
+.backup-btn.ghost:hover{color:var(–ink);border-color:var(–accent)}
+@media (max-width:560px){
+.backup-banner{flex-wrap:wrap}
+.backup-content{flex:1 1 calc(100% - 40px)}
+.backup-actions{flex:1 1 100%;justify-content:flex-end;margin-top:4px}
+}
+
+/* PWA Install Tipp (nur einmal anzeigbar) */
+.pwa-tip{
+background:rgba(29,78,216,0.08);border:1px solid rgba(29,78,216,0.3);
+border-radius:12px;padding:14px 16px;margin-bottom:14px;
+display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.5;
+}
+.pwa-tip-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.pwa-tip-text{flex:1;color:var(–ink-dim)}
+.pwa-tip-text strong{color:#60a5fa;display:block;font-family:‘Bebas Neue’;font-size:16px;letter-spacing:0.04em;margin-bottom:3px;font-weight:normal}
+.pwa-tip-close{
+background:transparent;border:0;color:var(–ink-mute);font-size:18px;cursor:pointer;
+width:28px;height:28px;border-radius:6px;flex-shrink:0;
+}
+.pwa-tip-close:hover{color:var(–ink);background:rgba(255,255,255,0.05)}
+
+/* ===== INFO BOXES ===== */
+.callout{background:linear-gradient(135deg,rgba(255,31,61,0.08),rgba(255,212,0,0.04));border:1px solid rgba(255,31,61,0.2);border-radius:12px;padding:14px 16px;margin:14px 0;font-size:14px;color:var(–ink)}
+.callout strong{color:var(–accent-2)}
+.callout.blue{background:linear-gradient(135deg,rgba(29,78,216,0.1),rgba(29,78,216,0.02));border-color:rgba(29,78,216,0.3)}
+.callout.blue strong{color:#60a5fa}
+
+/* ===== FOOTER ===== */
+footer{margin-top:32px;padding:20px 16px calc(20px + env(safe-area-inset-bottom));text-align:center;color:var(–ink-mute);font-family:‘JetBrains Mono’;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;border-top:1px solid var(–panel-line);line-height:1.7}
+
+/* save button */
+.save-btn{display:inline-flex;align-items:center;gap:8px;background:var(–accent);color:#fff;border:0;padding:10px 18px;border-radius:10px;font-family:‘JetBrains Mono’;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:transform .15s, box-shadow .15s;margin-top:14px;font-weight:700}
+.save-btn:hover{transform:translateY(-1px);box-shadow:0 12px 30px -10px var(–accent)}
+.save-btn.ghost{background:transparent;border:1px solid var(–panel-line);color:var(–ink-dim)}
+.save-btn.ghost:hover{color:var(–ink);border-color:var(–accent)}
+
+/* notes */
+textarea{width:100%;background:var(–bg-2);border:1px solid var(–panel-line);color:var(–ink);font-family:‘Inter’;font-size:16px;padding:14px;border-radius:10px;outline:none;resize:vertical;min-height:100px;transition:border-color .2s;-webkit-appearance:none}
+textarea:focus{border-color:var(–accent)}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+
+  <header>
+    <div class="eyebrow"><span class="dot"></span>Mission Brief · Hybrid Athlete · Ultra 100K</div>
+    <h1>HYBRID<br><span class="red">100</span><span class="yel">K</span></h1>
+    <p class="sub">12–16 Monate. Straße &amp; Trail. Stark aussehen, stark finishen. Modularer Schicht-Baukasten — du wählst die Schicht, der Plan liefert das optimale Training.</p>
+    <div class="meta">
+      <div class="chip">Athlet · <strong>24J / 184cm / 78kg</strong></div>
+      <div class="chip">Fokus · <strong>Ultra + Aufbau</strong></div>
+      <div class="chip">Stand · <strong>Wiedereinstieg</strong></div>
+      <div class="chip">Ziel · <strong>Finish + Physique</strong></div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="builder"><span class="tab-num">01</span>Baukasten</button>
+    <button class="tab" data-tab="tracker"><span class="tab-num">02</span>Tracker</button>
+    <button class="tab" data-tab="phases"><span class="tab-num">03</span>Phasen</button>
+    <button class="tab" data-tab="strength"><span class="tab-num">04</span>Kraft</button>
+    <button class="tab" data-tab="running"><span class="tab-num">05</span>Lauf-Zonen</button>
+    <button class="tab" data-tab="sleep"><span class="tab-num">06</span>Schlaf</button>
+    <button class="tab" data-tab="nutrition"><span class="tab-num">07</span>Ernährung</button>
+    <button class="tab" data-tab="recovery"><span class="tab-num">08</span>Mobility</button>
+    <button class="tab" data-tab="equipment"><span class="tab-num">09</span>Equipment</button>
+  </nav>
+
+  <!-- BACKUP BANNER (erscheint nur bei Bedarf) -->
+
+  <div id="backupBanner" class="backup-banner" style="display:none">
+    <div class="backup-icon">⚠️</div>
+    <div class="backup-content">
+      <div class="backup-title" id="backupTitle">Backup empfohlen</div>
+      <div class="backup-desc" id="backupDesc">Sichere deine Tracker-Daten als JSON-Datei.</div>
+    </div>
+    <div class="backup-actions">
+      <button class="backup-btn primary" id="backupNow">Jetzt sichern</button>
+      <button class="backup-btn ghost" id="backupSnooze" title="3 Tage erinnern">3T</button>
+      <button class="backup-btn ghost" id="backupClose" title="Schließen">×</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 1: BAUKASTEN -->
+
+  <!-- ============================================ -->
+
+  <section class="panel active" id="builder">
+    <div class="card">
+      <h2><span class="bar"></span>Schicht-Baukasten</h2>
+      <p>Trage deine Schicht für jeden Tag der Woche ein — der Plan generiert automatisch das passende Training. Das System priorisiert <strong>Laufen &gt; Kraft &gt; Mobility &gt; Cross-Training</strong> und plant Long Run + Kraft strategisch nach deinem Schicht-Rhythmus.</p>
+
+```
+  <div class="builder-head">
+    <div class="input-block">
+      <label>Startdatum Training</label>
+      <input type="date" id="startDate">
+    </div>
+    <div class="input-block">
+      <label>Renndatum (100K)</label>
+      <input type="date" id="raceDate">
+    </div>
+  </div>
+
+  <div class="auto-status" id="autoStatus">
+    <div class="auto-row">
+      <div class="auto-block">
+        <div class="auto-lbl">Aktuelle Woche</div>
+        <div class="auto-val" id="autoWeek">–</div>
+      </div>
+      <div class="auto-block">
+        <div class="auto-lbl">Phase</div>
+        <div class="auto-val" id="autoPhase">–</div>
+      </div>
+      <div class="auto-block">
+        <div class="auto-lbl">Wochen-KM</div>
+        <div class="auto-val" id="autoKm">–</div>
+      </div>
+      <div class="auto-block">
+        <div class="auto-lbl">Bis Race</div>
+        <div class="auto-val" id="autoCountdown">–</div>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="auto-meta">
+      <span id="phaseDescription">Trage Start- und Renndatum ein</span>
+      <button class="manual-toggle" id="manualToggle">Manuell anpassen</button>
+    </div>
+  </div>
+
+  <div class="manual-override" id="manualOverride" style="display:none">
+    <div class="builder-head">
+      <div class="input-block">
+        <label>Phase manuell</label>
+        <select id="phaseSelect">
+          <option value="base">Phase 1 — Base</option>
+          <option value="build">Phase 2 — Build</option>
+          <option value="peak">Phase 3 — Peak</option>
+          <option value="taper">Phase 4 — Taper</option>
+        </select>
+      </div>
+      <div class="input-block">
+        <label>Wochen-KM manuell</label>
+        <select id="kmTarget">
+          <option value="30">30 km</option>
+          <option value="40">40 km</option>
+          <option value="50">50 km</option>
+          <option value="60">60 km</option>
+          <option value="70">70 km</option>
+          <option value="80">80 km</option>
+          <option value="90">90 km</option>
+          <option value="100">100 km</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-grid" id="weekGrid">
+    <!-- gefüllt via JS -->
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--accent)"></i>Lauf-Hauptsession</span>
+    <span><i style="background:var(--accent-2)"></i>Long Run</span>
+    <span><i style="background:#a855f7"></i>Kraft</span>
+    <span><i style="background:var(--accent-3)"></i>Recovery / Mobility</span>
+  </div>
+
+  <div class="summary" id="weekSummary">
+    <div class="stat"><div class="lbl">KM (Ist / Ziel)</div><div class="val" id="sumKm">0<span class="unit">km</span></div></div>
+    <div class="stat"><div class="lbl">Lauf-Sessions</div><div class="val" id="sumRuns">0<span class="unit">×</span></div></div>
+    <div class="stat"><div class="lbl">Kraft</div><div class="val" id="sumLift">0<span class="unit">×</span></div></div>
+    <div class="stat"><div class="lbl">Belastung</div><div class="val" id="sumLoad">–</div></div>
+  </div>
+
+  <div class="callout">
+    <strong>So liest du den Output:</strong> Jede Zelle zeigt die <em>Session-Art</em>, geschätzte <em>Dauer</em>, und einen <em>Hinweis</em> zur Intensität. Z2 = Zone 2 (locker, Nase-Atmung möglich). RPE = subjektive Anstrengung 1–10.
+  </div>
+
+  <h3>Logik des Baukastens</h3>
+  <table>
+    <thead><tr><th>Schicht</th><th>Beste Trainingsoption</th><th>Begründung</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Frei</strong></td><td>Long Run / Kraft (Priorität)</td><td>Volle Zeit + frische Beine = Long Run Tag</td></tr>
+      <tr><td><strong>V-Schicht (08–20)</strong></td><td>Ruhe oder kurzer Z2-Lauf am Vorabend</td><td>12h Arbeit + Sitz = nur lockere Bewegung</td></tr>
+      <tr><td><strong>Tagschicht (07–19)</strong></td><td>20 Min Mobility/Core morgens</td><td>Nur 20 Min Zeit → Erhalt statt Reiz</td></tr>
+      <tr><td><strong>Nachtschicht (19–07)</strong></td><td>Z2-Lauf 60–90 Min vor Schicht (15:00)</td><td>Tag offen → Zeit für lockere KM</td></tr>
+      <tr><td><strong>Schlaftag</strong></td><td>Komplette Ruhe oder Mobility am Abend</td><td>6h Schlaf 08–14 = Erholung absoluter Vorrang</td></tr>
+    </tbody>
+  </table>
+</div>
+```
+
+  </section>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 2: PHASEN -->
+
+  <!-- ============================================ -->
+
+  <section class="panel" id="phases">
+    <div class="card">
+      <h2><span class="bar"></span>Trainingsphasen — 14 Monate</h2>
+      <p>Vier Blöcke vom Wiedereinstieg bis zur Startlinie. Jede Phase hat ein klares <strong>Ziel</strong>, eine <strong>Wochenstruktur</strong> und eine <strong>Belastungsobergrenze</strong>. Wechsle im Baukasten oben die Phase, um die Sessions anzupassen.</p>
+
+```
+  <div class="timeline">
+    <div class="phase p1">
+      <div class="ph-num">Phase 01 · Mon 1–4</div>
+      <h4>BASE</h4>
+      <ul>
+        <li>Wiedereinstieg ohne Schmerz</li>
+        <li>30→50 km/Wo aufbauen</li>
+        <li>Kraft 2×: Squat, DL, Bench, OHP</li>
+        <li>80% Z2 / 20% leichte Tempos</li>
+        <li>Long Run Cap: 90 Min</li>
+      </ul>
+    </div>
+    <div class="phase p2">
+      <div class="ph-num">Phase 02 · Mon 5–9</div>
+      <h4>BUILD</h4>
+      <ul>
+        <li>Volumen: 50→75 km/Wo</li>
+        <li>Erste Trail-Long-Runs (HM!)</li>
+        <li>Kraft 2× — Hypertrophie 8–12 Reps</li>
+        <li>1× Tempo / 1× Long / Rest Z2</li>
+        <li>Long Run Cap: 2:30 h</li>
+      </ul>
+    </div>
+    <div class="phase p3">
+      <div class="ph-num">Phase 03 · Mon 10–14</div>
+      <h4>PEAK</h4>
+      <ul>
+        <li>Volumen: 75→100 km/Wo</li>
+        <li>Back-to-Back Long Runs (jetzt sinnvoll!)</li>
+        <li>Kraft 1–2× — Erhalt</li>
+        <li>Race-Pace Simulation, Nachtläufe</li>
+        <li>Long Run Cap: 4–6 h</li>
+      </ul>
+    </div>
+    <div class="phase p4">
+      <div class="ph-num">Phase 04 · Letzte 2–4 Wo</div>
+      <h4>TAPER</h4>
+      <ul>
+        <li>Volumen halbieren in 2 Wo</li>
+        <li>Intensität halten — kurz</li>
+        <li>Kraft 1× sehr leicht</li>
+        <li>Schlaf, Carb-Loading, Mental</li>
+        <li>Race day: Finishen + smart</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-top:24px">Block-Periodisierung pro Phase (4-Wochen-Welle)</h3>
+  <table>
+    <thead><tr><th>Woche</th><th>Volumen</th><th>Intensität</th><th>Kraft</th><th>Fokus</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1</strong></td><td>100%</td><td>Standard</td><td>Voll</td><td>Aufbau</td></tr>
+      <tr><td><strong>2</strong></td><td>110%</td><td>Standard</td><td>Voll</td><td>Push</td></tr>
+      <tr><td><strong>3</strong></td><td>120%</td><td>+1 Quality</td><td>Erhalt</td><td>Peak Wo</td></tr>
+      <tr><td><strong>4</strong></td><td>70% (Deload)</td><td>Sehr leicht</td><td>Optional</td><td>Erholung</td></tr>
+    </tbody>
+  </table>
+  <div class="callout blue"><strong>Wichtig:</strong> Bei Wiedereinstieg in den ersten 6 Wochen <em>keine</em> Welle — gleichmäßiger linearer Aufbau ohne Sprünge &gt;10% pro Woche. Das schützt Schienbeine, Achillessehnen und Knie.</div>
+</div>
+```
+
+  </section>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 3: KRAFT -->
+
+  <!-- ============================================ -->
+
+  <section class="panel" id="strength">
+    <div class="card">
+      <h2><span class="bar"></span>Kraft — Hybrid Athlete Style</h2>
+      <p>Zwei Sessions pro Woche, Ganzkörper, Push/Pull-Balance. Ziel: Muskelmasse aufbauen <strong>ohne</strong> die Laufregeneration zu killen. Niedrige bis mittlere Reps für Stabilität, höhere Reps für Hypertrophie. Keine Beinpressen-Massaker am Tag vor dem Long Run.</p>
+
+```
+  <h3>Workout A — Push/Squat-dominant</h3>
+  <table>
+    <thead><tr><th>Übung</th><th>Sätze × Wdh.</th><th>Hinweis</th></tr></thead>
+    <tbody>
+      <tr><td>Back Squat</td><td>4 × 5–6</td><td>RPE 7, sauber, tief</td></tr>
+      <tr><td>Bankdrücken</td><td>4 × 6–8</td><td>Schulterblätter zusammen</td></tr>
+      <tr><td>Walking Lunges</td><td>3 × 10/Bein</td><td>Kurbel die Glutes</td></tr>
+      <tr><td>Schulterdrücken stehend</td><td>3 × 8</td><td>Core fest</td></tr>
+      <tr><td>Plank + Side Plank</td><td>3 × 45 s</td><td>Atmen nicht vergessen</td></tr>
+      <tr><td>Calf Raise (Single Leg)</td><td>3 × 12</td><td>Achilles-Schutz</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Workout B — Pull/Hinge-dominant</h3>
+  <table>
+    <thead><tr><th>Übung</th><th>Sätze × Wdh.</th><th>Hinweis</th></tr></thead>
+    <tbody>
+      <tr><td>Kreuzheben (konventionell)</td><td>4 × 4–5</td><td>RPE 7, neutraler Rücken</td></tr>
+      <tr><td>Klimmzüge</td><td>4 × max</td><td>Volle ROM, Pause unten</td></tr>
+      <tr><td>Rumänisches Kreuzheben</td><td>3 × 8</td><td>Hamstring-Schutz</td></tr>
+      <tr><td>Langhantelrudern</td><td>3 × 8–10</td><td>Lats anziehen</td></tr>
+      <tr><td>Hanging Leg Raises</td><td>3 × 10</td><td>Hüftbeuger-Kontrolle</td></tr>
+      <tr><td>Farmer Carry</td><td>3 × 30 m</td><td>Schwer. Grip + Core</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Phasenanpassung</h3>
+  <table>
+    <thead><tr><th>Phase</th><th>Häufigkeit</th><th>Reps</th><th>Ziel</th></tr></thead>
+    <tbody>
+      <tr><td>Base</td><td>2×/Wo</td><td>5–8</td><td>Strength + Form</td></tr>
+      <tr><td>Build</td><td>2×/Wo</td><td>6–12</td><td>Hypertrophie</td></tr>
+      <tr><td>Peak</td><td>1–2×/Wo</td><td>5 (leichter)</td><td>Erhalt</td></tr>
+      <tr><td>Taper</td><td>1× sehr leicht</td><td>5</td><td>Bewegungsmuster</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Aufbauen + Ultra:</strong> realistisch ist <em>moderater</em> Massezuwachs. 100 km Training verbrennt zu viel für volle Bro-Mode-Gains. Strebe 1–2 kg Muskel pro Jahr an, halte Körperfett unten. Das reicht für „Hybrid look“ ohne den Lauf zu sabotieren.</div>
+</div>
+```
+
+  </section>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 4: LAUF-ZONEN -->
+
+  <!-- ============================================ -->
+
+  <section class="panel" id="running">
+    <div class="card">
+      <h2><span class="bar"></span>Lauf-Intensitätszonen</h2>
+      <p>Da deine HFmax unbekannt ist: starte mit der Karvonen-Schätzung <strong>HFmax ≈ 220 − 24 = 196 bpm</strong>. Verfeinere nach 4–6 Wochen mit einem Test (5 km All-Out, max. HF in den letzten 90 Sek). Aktualisiere dann die Tabelle.</p>
+
+```
+  <table>
+    <thead><tr><th>Zone</th><th>% HFmax</th><th>BPM (HFmax 196)</th><th>Gefühl / RPE</th><th>Anteil im Plan</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Z1 Recovery</strong></td><td>50–60%</td><td>98–117</td><td>Sehr leicht / 2–3</td><td>~10%</td></tr>
+      <tr><td><strong>Z2 Aerob</strong></td><td>60–70%</td><td>117–137</td><td>Plaudern möglich / 3–4</td><td><strong>~70%</strong></td></tr>
+      <tr><td><strong>Z3 Tempo</strong></td><td>70–80%</td><td>137–157</td><td>Anstrengend / 5–6</td><td>~10%</td></tr>
+      <tr><td><strong>Z4 Schwelle</strong></td><td>80–90%</td><td>157–176</td><td>Hart / 7–8</td><td>~7%</td></tr>
+      <tr><td><strong>Z5 VO2</strong></td><td>90–100%</td><td>176–196</td><td>Maximal / 9–10</td><td>~3%</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Polarisiert trainieren</h3>
+  <p>Für Ultra gilt: <strong>80% locker (Z2), 20% hart (Z3–Z5)</strong>. Der häufigste Fehler ist „grauer Mittelbereich“ — zu schnell für Z2, zu langsam für echtes Schwellentraining. Nutze deinen Brustgurt streng. Wenn Puls aus Z2 driftet: <em>langsamer werden</em>, auch wenn es sich falsch anfühlt.</p>
+
+  <h3>Standard-Sessions</h3>
+  <table>
+    <thead><tr><th>Session</th><th>Aufbau</th><th>Zone</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Easy / Recovery</strong></td><td>30–60 Min flüssig</td><td>Z1–Z2</td></tr>
+      <tr><td><strong>Long Run</strong></td><td>90 Min – 4 h, je Phase</td><td>Z2 (letzte 30 Min Z3 möglich)</td></tr>
+      <tr><td><strong>Tempo</strong></td><td>15 Min EinL · 20–40 Min Tempo · 10 Min AusL</td><td>Z3</td></tr>
+      <tr><td><strong>Schwelle</strong></td><td>15 EinL · 4–6× 6 Min / 2 Min P · 10 AusL</td><td>Z4</td></tr>
+      <tr><td><strong>Berg-Intervalle</strong></td><td>10× 60 s steil rauf / locker runter</td><td>Z4–Z5</td></tr>
+      <tr><td><strong>Trail-Long</strong></td><td>2–4 h Trail mit Höhenmetern</td><td>Z2, Powerwalk an Anstiegen</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout blue"><strong>HF-Disziplin:</strong> Bei Hitze, Schlafmangel oder nach Nachtschicht steigt der Puls bei gleicher Pace um 5–15 bpm. Halte dich an die HF, nicht an die Pace. Das ist der Unterschied zwischen Disziplin und Ego.</div>
+</div>
+```
+
+  </section>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 5: SCHLAF -->
+
+  <!-- ============================================ -->
+
+  <section class="panel" id="sleep">
+    <div class="card">
+      <h2><span class="bar"></span>Schlaf bei Schichtarbeit</h2>
+      <p>Dein größter Hebel. Mit Schichtdienst ist Schlaf die schwierigste Variable — aber genau deshalb der größte Gewinn, wenn du ihn richtig managst. Ziel: <strong>7–9 h pro 24 h</strong>, summiert aus Hauptschlaf + ggf. Nap.</p>
+
+```
+  <h3>Schlaf pro Schicht-Typ</h3>
+  <table>
+    <thead><tr><th>Schicht</th><th>Hauptschlaf</th><th>Nap</th><th>Tipps</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Frei</strong></td><td>23:00 – 07:00</td><td>—</td><td>Anker-Tag für Rhythmus</td></tr>
+      <tr><td><strong>Tagschicht (07–19)</strong></td><td>22:00 – 05:30</td><td>—</td><td>Magnesium 400mg abends</td></tr>
+      <tr><td><strong>V-Schicht (08–20)</strong></td><td>23:00 – 06:30</td><td>—</td><td>Wie Tagschicht</td></tr>
+      <tr><td><strong>Nachtschicht (19–07)</strong></td><td>08:30 – 14:00</td><td>17:00 – 18:00 (Power-Nap)</td><td>Verdunkeln, Ohrstöpsel, kühl</td></tr>
+      <tr><td><strong>Schlaftag (n. Nacht)</strong></td><td>08:00 – 14:00</td><td>22:00 – 06:00 (Re-Set)</td><td>Kein Training morgens — voll regenerieren</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Licht-Strategie</h3>
+  <ul style="list-style:none;padding:0">
+    <li style="padding:6px 0;border-bottom:1px solid var(--panel-line)"><strong style="color:var(--accent-2)">Vor Nachtschicht:</strong> Sonnenbrille auf dem Heimweg morgens, dann sofort Verdunklung. Helligkeit = wach.</li>
+    <li style="padding:6px 0;border-bottom:1px solid var(--panel-line)"><strong style="color:var(--accent-2)">Während Nachtschicht:</strong> Helles Licht in der ersten Hälfte (bis ~02:00), danach gedämpfter wenn möglich.</li>
+    <li style="padding:6px 0;border-bottom:1px solid var(--panel-line)"><strong style="color:var(--accent-2)">Nach Nachtschicht:</strong> Kein Bildschirm 30 Min vor Bett. Raum 17–19°C.</li>
+    <li style="padding:6px 0"><strong style="color:var(--accent-2)">An freien Tagen:</strong> 10 Min Sonne direkt nach dem Aufwachen — re-synct deinen Rhythmus.</li>
+  </ul>
+
+  <h3>Koffein-Regel (wichtig!)</h3>
+  <table>
+    <thead><tr><th>Schicht</th><th>Letzter Espresso</th></tr></thead>
+    <tbody>
+      <tr><td>Frei / Tag / V</td><td>spätestens 14:00 Uhr</td></tr>
+      <tr><td>Nachtschicht</td><td>spätestens 02:00 Uhr (6 h vor Schlaf)</td></tr>
+      <tr><td>Schlaftag morgens</td><td><strong>kein</strong> Koffein nach 06:00</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Faustregel:</strong> Wenn du 2 Tage hintereinander &lt;6 h Schlaf hast, streiche die nächste harte Session und ersetz durch 30–45 Min Z1. Schlaf &gt; Training, immer.</div>
+</div>
+```
+
+  </section>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 6: ERNÄHRUNG -->
+
+  <!-- ============================================ -->
+
+  <section class="panel" id="nutrition">
+    <div class="card">
+      <h2><span class="bar"></span>Ernährung</h2>
+      <p>Ziel: <strong>Gewicht halten</strong> bei 78 kg, Muskel-Erhalt/leichter Aufbau, Energie für Long Runs. Drei Mahlzeiten passen — wir periodisieren um die Sessions herum.</p>
+
+```
+  <h3>Makros pro Tag (Erhaltung)</h3>
+  <table>
+    <thead><tr><th>Makro</th><th>Menge</th><th>Quelle</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Kalorien</strong></td><td>~2900–3200 kcal (variiert nach Trainingstag)</td><td>—</td></tr>
+      <tr><td><strong>Protein</strong></td><td>156–172 g (2,0–2,2 g/kg)</td><td>Eier, Quark, Hähnchen, Fisch, Whey</td></tr>
+      <tr><td><strong>Kohlenhydrate</strong></td><td>4–7 g/kg (315–545 g)</td><td>Reis, Haferflocken, Kartoffeln, Obst</td></tr>
+      <tr><td><strong>Fett</strong></td><td>0,8–1,0 g/kg (62–78 g)</td><td>Olivenöl, Nüsse, Avocado, fetter Fisch</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:6px"><strong>Hinweis zu deinen 160 g Protein:</strong> Solide Basis. An harten Trainingstagen mit Kraft + Lauf darf es Richtung 170 g gehen — der Körper repariert mehr Gewebe.</p>
+
+  <h3>Carb-Periodisierung nach Trainingstag</h3>
+  <table>
+    <thead><tr><th>Tag</th><th>Carbs</th><th>Beispiel</th></tr></thead>
+    <tbody>
+      <tr><td>Long Run / Hartes Training</td><td>6–7 g/kg</td><td>Reisbowl + Pasta-Abend</td></tr>
+      <tr><td>Easy Z2 / Kraft</td><td>4–5 g/kg</td><td>Standard-Mahlzeiten</td></tr>
+      <tr><td>Ruhe / Schlaftag</td><td>3–4 g/kg</td><td>Mehr Gemüse, weniger Stärke</td></tr>
+    </tbody>
+  </table>
+
+  <h3>In-Run-Fueling (kritisch für Ultra!)</h3>
+  <table>
+    <thead><tr><th>Dauer</th><th>Carbs/Stunde</th><th>Flüssigkeit</th><th>Salz</th></tr></thead>
+    <tbody>
+      <tr><td>&lt; 60 Min</td><td>0 g (nur Wasser)</td><td>nach Durst</td><td>—</td></tr>
+      <tr><td>60–90 Min</td><td>30 g</td><td>400–500 ml</td><td>—</td></tr>
+      <tr><td>90 Min – 3 h</td><td>60 g</td><td>500–700 ml/h</td><td>500–700 mg Na/h</td></tr>
+      <tr><td>&gt; 3 h (Ultra)</td><td>60–90 g</td><td>500–800 ml/h</td><td>700–1000 mg Na/h</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Dein Durchfall-Problem:</strong> klassisches Zeichen dass Magen nicht an Carbs unter Belastung gewöhnt ist. <em>Trainiere den Darm</em> wie einen Muskel. Starte mit 30 g/h, steigere alle 2 Wo um 10 g. Teste verschiedene Marken (Maurten, SIS, Maltodextrin pur). Nimm Gels <strong>immer mit Wasser</strong>, niemals trocken.</div>
+
+  <h3>Koffein-Strategie</h3>
+  <p>Du nimmst täglich Koffein → Toleranz hoch. <strong>Trick:</strong> 2 Wochen vor dem 100k auf 1 Tasse/Tag reduzieren. Dann am Renntag 200 mg vor Start + 100 mg ca. KM 50 + 100 mg KM 80. Das gibt einen echten Boost statt Plateau.</p>
+
+  <div class="callout blue"><strong>Alkohol:</strong> dass du keinen Tropfen trinkst ist ein massiver Vorteil. Schlafqualität, Regeneration, Hydration — alles besser. Beibehalten.</div>
+</div>
+```
+
+  </section>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 7: MOBILITY / RECOVERY -->
+
+  <!-- ============================================ -->
+
+  <section class="panel" id="recovery">
+    <div class="card">
+      <h2><span class="bar"></span>Mobility &amp; Regeneration</h2>
+      <p>Dein 20-Minuten-Slot vor der Tagschicht passt perfekt für Mobility. Diese Routine schützt Hüfte, Sprunggelenke und Schienbeine — die Schwachstellen jedes Läufers.</p>
+
+```
+  <h3>Daily 20-Min Mobility (Vor-Schicht-Tauglich)</h3>
+  <table>
+    <thead><tr><th>Block</th><th>Übung</th><th>Dauer</th></tr></thead>
+    <tbody>
+      <tr><td>Wakeup</td><td>Cat-Cow + 90/90 Hip Rotations</td><td>3 Min</td></tr>
+      <tr><td>Hüfte</td><td>World's Greatest Stretch + Couch Stretch</td><td>4 Min</td></tr>
+      <tr><td>Sprunggelenk</td><td>Wall Ankle Mobility + Calf Stretch</td><td>3 Min</td></tr>
+      <tr><td>Hamstring</td><td>Aktive Hamstring Mobility (kein Bouncing)</td><td>3 Min</td></tr>
+      <tr><td>Core</td><td>Dead Bug + Bird Dog</td><td>3 Min</td></tr>
+      <tr><td>Blackroll</td><td>Glutes, Quads, Waden, ITB</td><td>4 Min</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Nach langen Läufen (Recovery-Stack)</h3>
+  <ul style="list-style:none">
+    <li style="padding:6px 0;border-bottom:1px solid var(--panel-line)"><strong style="color:var(--accent-2)">5 Min:</strong> Gehen statt sofort hinsetzen — Lymphfluss</li>
+    <li style="padding:6px 0;border-bottom:1px solid var(--panel-line)"><strong style="color:var(--accent-2)">15 Min:</strong> Kalt duschen Beine (1–2 Min) — Inflammation runter</li>
+    <li style="padding:6px 0;border-bottom:1px solid var(--panel-line)"><strong style="color:var(--accent-2)">30 Min:</strong> 30 g Protein + 80 g Carbs (Quark + Banane + Honig)</li>
+    <li style="padding:6px 0;border-bottom:1px solid var(--panel-line)"><strong style="color:var(--accent-2)">Abends:</strong> 10 Min Beine hoch an die Wand, 5 Min Blackroll</li>
+    <li style="padding:6px 0"><strong style="color:var(--accent-2)">Sauna:</strong> 2× pro Wo, 15–20 Min, NICHT nach dem Long Run (zu dehydrierend) — eher am Tag danach</li>
+  </ul>
+
+  <h3>Sauna-Protokoll für Hitzeakklimatisierung</h3>
+  <p>Sauna 4× pro Woche, 20 Min bei 80–90°C, in den letzten 4 Wo vor dem Rennen, baut Plasmavolumen auf — auch wenn dein Rennen im Winter ist hilft das. <strong>Nicht</strong> direkt nach hartem Training.</p>
+
+  <h3>Physio</h3>
+  <p>1× monatlich präventiv, ohne Beschwerden. Das fängt kleine Dysbalancen ab bevor sie zu Verletzungen werden. Bei Achillessehne, Schienbein oder Knie-Druck → sofort hin, nie ignorieren.</p>
+
+  <div class="callout">
+    <strong>Regenerations-Ampel:</strong> Morgens nach dem Aufwachen 1 Min still sitzen, Ruhepuls messen.<br>
+    <span style="color:var(--good)">● Grün:</span> Puls ±3 bpm vom Schnitt → trainieren.<br>
+    <span style="color:var(--warn)">● Gelb:</span> +5–10 bpm → Volumen halbieren oder Z1.<br>
+    <span style="color:var(--bad)">● Rot:</span> +10 bpm → Ruhetag.
+  </div>
+</div>
+```
+
+  </section>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 8: EQUIPMENT -->
+
+  <!-- ============================================ -->
+
+  <section class="panel" id="equipment">
+    <div class="card">
+      <h2><span class="bar"></span>Equipment-Check</h2>
+      <p>Du hast alles. Hier die strategische Nutzung.</p>
+
+```
+  <h3>Schuh-Rotation</h3>
+  <table>
+    <thead><tr><th>Schuh</th><th>Einsatz</th><th>Empfehlung</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ON Cloudflyer (aktuell)</strong></td><td>Stabilitätsschuh</td><td>Easy Runs, Recovery</td></tr>
+      <tr><td><em>Plus: Daily Trainer</em></td><td>Tempo + Long Run Straße</td><td>z.B. Saucony Endorphin Speed, Hoka Mach</td></tr>
+      <tr><td><em>Plus: Trailschuh</em></td><td>Trail-Long-Runs, Race</td><td>z.B. Hoka Speedgoat, Salomon S/Lab Genesis</td></tr>
+      <tr><td><em>Optional: Race Day</em></td><td>Carbon-Plate für Asphalt-Anteile</td><td>nur wenn 100k großen Straßen-Anteil hat</td></tr>
+    </tbody>
+  </table>
+  <p>Rotation halbiert das Verletzungsrisiko: jeder Schuh belastet die Sehnen anders. Tausch nach jeder Session.</p>
+
+  <h3>Race-Day-Checkliste 100K</h3>
+  <div class="check-list">
+    <label class="check"><input type="checkbox"><span>Laufweste (ausgiebig getestet)</span></label>
+    <label class="check"><input type="checkbox"><span>2× Softflasks 500 ml</span></label>
+    <label class="check"><input type="checkbox"><span>Stirnlampe + Reservebatterie</span></label>
+    <label class="check"><input type="checkbox"><span>10–14 Gels (60–90 g Carbs/h)</span></label>
+    <label class="check"><input type="checkbox"><span>Elektrolyt-Tabs/Kapseln</span></label>
+    <label class="check"><input type="checkbox"><span>Riegel + reale Lebensmittel (Bananen, Salzkartoffeln)</span></label>
+    <label class="check"><input type="checkbox"><span>Blasenpflaster + Tape</span></label>
+    <label class="check"><input type="checkbox"><span>Vaseline / BodyGlide</span></label>
+    <label class="check"><input type="checkbox"><span>Wechselshirt + Socken (Drop Bag)</span></label>
+    <label class="check"><input type="checkbox"><span>Regenjacke (leicht)</span></label>
+    <label class="check"><input type="checkbox"><span>Mütze + Buff</span></label>
+    <label class="check"><input type="checkbox"><span>Sonnencreme + Sonnenbrille</span></label>
+    <label class="check"><input type="checkbox"><span>Pfeife / Erste-Hilfe-Set</span></label>
+    <label class="check"><input type="checkbox"><span>GPS-Uhr voll geladen</span></label>
+    <label class="check"><input type="checkbox"><span>Brustgurt</span></label>
+    <label class="check"><input type="checkbox"><span>Telefon + Ladebank</span></label>
+  </div>
+
+  <h3>Indoor-Rad als Backup</h3>
+  <p>Bei Verletzungs-Risiko-Anzeichen (Schienbein, Achilles): ersetze 1–2 Z2-Läufe durch 60–90 Min Z2-Rad. Kardiovaskulärer Stimulus bleibt, Aufprall fällt weg. Im Taper genauso ein guter Volumen-Erhalter ohne Belastung.</p>
+</div>
+```
+
+  </section>
+
+  <!-- ============================================ -->
+
+  <!-- TAB 2: TRACKER (Heute-Fokus) -->
+
+  <!-- ============================================ -->
+
+  <section class="panel" id="tracker">
+
+```
+<!-- PWA Install Hint (nur in Safari, nicht standalone) -->
+<div class="pwa-tip" id="pwaTip" style="display:none">
+  <span class="pwa-tip-icon">📱</span>
+  <div class="pwa-tip-text">
+    <strong>Als App installieren</strong>
+    Tippe in Safari unten auf <em>Teilen</em> → <em>Zum Home-Bildschirm</em>. Daten bleiben so deutlich länger erhalten.
+  </div>
+  <button class="pwa-tip-close" id="pwaTipClose" title="Verstanden">×</button>
+</div>
+
+<!-- HEUTE-FOKUS -->
+<div class="card today-card">
+  <div class="today-head">
+    <div>
+      <div class="today-eyebrow">Heute · <span id="todayDate">–</span></div>
+      <h2 style="margin-bottom:0"><span class="bar"></span>Tagesprotokoll</h2>
+    </div>
+    <div class="today-streak" id="todayStreak" title="Streak: aufeinanderfolgende Tage mit Eintrag">
+      <span class="streak-flame">🔥</span>
+      <span class="streak-num">0</span>
+      <span class="streak-lbl">Tage</span>
+    </div>
+  </div>
+
+  <div class="today-grid">
+    <div class="today-field">
+      <label>Schlaf</label>
+      <div class="today-input-wrap">
+        <input type="number" step="0.5" min="0" max="14" id="todaySleep" placeholder="7.5">
+        <span class="today-unit">h</span>
+      </div>
+    </div>
+    <div class="today-field">
+      <label>Gewicht</label>
+      <div class="today-input-wrap">
+        <input type="number" step="0.1" min="40" max="150" id="todayWeight" placeholder="78.0">
+        <span class="today-unit">kg</span>
+      </div>
+    </div>
+    <div class="today-field today-field-wide">
+      <label>Schicht</label>
+      <select id="todayShift">
+        <option value="">— wählen —</option>
+        <option value="Frei">Frei</option>
+        <option value="Tagschicht">Tagschicht (07–19)</option>
+        <option value="V-Schicht">V-Schicht (08–20)</option>
+        <option value="Nachtschicht">Nachtschicht (19–07)</option>
+        <option value="Schlaftag">Schlaftag</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="today-field">
+    <label>Notiz</label>
+    <textarea id="todayNote" placeholder="Wie fühlst du dich? Beschwerden? Erkenntnisse..."></textarea>
+  </div>
+
+  <div class="today-actions">
+    <button class="save-btn" id="saveToday">Eintrag speichern</button>
+    <span class="save-status" id="saveStatus"></span>
+  </div>
+</div>
+
+<!-- AVERAGES -->
+<div class="card averages-card">
+  <h3 style="margin-top:0">Durchschnitt 7 Tage</h3>
+  <div class="averages-grid">
+    <div class="avg-box">
+      <div class="avg-lbl">Schlaf Ø</div>
+      <div class="avg-val" id="avgSleep">–<span class="avg-unit"> h</span></div>
+    </div>
+    <div class="avg-box">
+      <div class="avg-lbl">Gewicht Ø</div>
+      <div class="avg-val" id="avgWeight">–<span class="avg-unit"> kg</span></div>
+    </div>
+    <div class="avg-box">
+      <div class="avg-lbl">Einträge</div>
+      <div class="avg-val" id="avgCount">0<span class="avg-unit"> /7</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="card">
+  <div class="history-head">
+    <h3 style="margin:0">History</h3>
+    <div style="display:flex;gap:6px">
+      <label class="manual-toggle" style="cursor:pointer">
+        Import
+        <input type="file" id="importInput" accept="application/json,.json" style="display:none">
+      </label>
+      <button class="manual-toggle" id="exportBtn">Export</button>
+    </div>
+  </div>
+  <div class="history-list" id="historyList">
+    <div class="history-empty">Noch keine Einträge. Speichere oben deinen ersten Tag.</div>
+  </div>
+</div>
+```
+
+  </section>
+
+  <footer>HYBRID 100K · Built for shift workers · Stay disciplined · Run when others sleep</footer>
+</div>
+
+<script>
+/* ============================================
+   TAB SWITCHING
+   ============================================ */
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.classList.remove('active'));
+  panels.forEach(p => p.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.tab).classList.add('active');
+  window.scrollTo({top: 0, behavior:'smooth'});
+}));
+
+/* ============================================
+   BAUKASTEN-LOGIK
+   ============================================ */
+const days = ['MO','DI','MI','DO','FR','SA','SO'];
+const shifts = [
+  {v:'frei', label:'Frei'},
+  {v:'tag', label:'Tagschicht (07–19)'},
+  {v:'v', label:'V-Schicht (08–20)'},
+  {v:'nacht', label:'Nachtschicht (19–07)'},
+  {v:'schlaf', label:'Schlaftag (n. Nacht)'}
+];
+
+/* Phasen-Konfiguration */
+const phaseConfig = {
+  base:  { longRunMin: 60, longRunMax: 90,  hardSessions: 1, kmFactor: 1.0,  liftDays: 2 },
+  build: { longRunMin: 90, longRunMax: 150, hardSessions: 2, kmFactor: 1.0,  liftDays: 2 },
+  peak:  { longRunMin:150, longRunMax: 240, hardSessions: 2, kmFactor: 1.0,  liftDays: 1 },
+  taper: { longRunMin: 60, longRunMax: 90,  hardSessions: 1, kmFactor: 0.5,  liftDays: 1 }
+};
+
+/* Plan-Generator: weist die 7 Tage intelligent zu — ZIEL-GETRIEBEN */
+function generateWeek(){
+  /* Phase und KM entweder automatisch oder manuell */
+  updateAutoStatus();
+  const auto = computeAutoState();
+  let phase, weekKm;
+  if(manualMode){
+    phase = document.getElementById('phaseSelect').value;
+    weekKm = parseInt(document.getElementById('kmTarget').value);
+  } else if(auto.valid){
+    phase = auto.phase;
+    weekKm = auto.weekKm;
+  } else {
+    phase = 'base';
+    weekKm = 30;
+  }
+  const cfg = phaseConfig[phase];
+
+  const dayShifts = days.map(d => {
+    const sel = document.querySelector(`select[data-day="${d}"]`);
+    return sel ? sel.value : 'frei';
+  });
+
+  // Sammle Indizes pro Schicht-Typ
+  const idx = { frei:[], tag:[], v:[], nacht:[], schlaf:[] };
+  dayShifts.forEach((s,i) => idx[s].push(i));
+
+  /* ===== SCHRITT 1: Slot-Zuweisung mit Priorisierung =====
+     Maximiere Lauf-Slots damit das Wochenziel erreichbar ist */
+  const trainingSlots = Array(7).fill(null);
+
+  // 1a. Long Run: längster Frei-Block, idealerweise Recovery dahinter
+  let longIdx = null;
+  if(idx.frei.length > 0){
+    for(const i of idx.frei){
+      const next = dayShifts[(i+1)%7];
+      if(next === 'frei' || next === 'schlaf'){ longIdx = i; break; }
+    }
+    if(longIdx === null) longIdx = idx.frei[0];
+    trainingSlots[longIdx] = 'long';
+  } else if(idx.nacht.length > 0){
+    /* Notfall: kein Frei-Tag → Long auf Nacht-Tag (vor Schicht) */
+    longIdx = idx.nacht[0];
+    trainingSlots[longIdx] = 'long_short';
+  }
+
+  // 1b. Quality: zweiter Frei-Tag mit ≥2 Tage Abstand zum Long
+  let qualityIdx = null;
+  if(idx.frei.length > 1 && cfg.hardSessions >= 1){
+    for(const i of idx.frei){
+      if(i === longIdx) continue;
+      const dist = Math.min(Math.abs(i-longIdx), 7-Math.abs(i-longIdx));
+      if(dist >= 2){ trainingSlots[i] = 'quality'; qualityIdx = i; break; }
+    }
+  }
+
+  // 1c. Kraft: bevorzugt Frei (sonst Nacht-Tag)
+  let liftCount = 0;
+  const liftIndices = [];
+  for(const i of idx.frei){
+    if(trainingSlots[i] === null && liftCount < cfg.liftDays){
+      trainingSlots[i] = liftCount === 0 ? 'strengthA' : 'strengthB';
+      liftIndices.push(i);
+      liftCount++;
+    }
+  }
+  if(liftCount < cfg.liftDays){
+    for(const i of idx.nacht){
+      if(trainingSlots[i] === null && liftCount < cfg.liftDays){
+        trainingSlots[i] = liftCount === 0 ? 'strengthA' : 'strengthB';
+        liftIndices.push(i);
+        liftCount++;
+      }
+    }
+  }
+
+  // 1d. Easy Runs: alle restlichen Frei + Nacht
+  const easyIndices = [];
+  [...idx.frei, ...idx.nacht].forEach(i => {
+    if(trainingSlots[i] === null){
+      trainingSlots[i] = 'easy';
+      easyIndices.push(i);
+    }
+  });
+
+  // 1e. Doppelsession: Kraft-Tage bekommen einen kurzen Easy-Run dazu (auf Frei-Tagen)
+  const doubleIndices = [];
+  liftIndices.forEach(i => {
+    if(dayShifts[i] === 'frei'){
+      doubleIndices.push(i);
+    }
+  });
+
+  /* ===== SCHRITT 2: Defizit-Check und Auffüllung =====
+     Wenn die geplanten Slots das Wochenziel nicht erreichen können,
+     fülle mit zusätzlichen Easy-Sessions auf */
+  const slotCount = {
+    long: trainingSlots.filter(s => s === 'long' || s === 'long_short').length,
+    quality: trainingSlots.filter(s => s === 'quality').length,
+    easy: easyIndices.length,
+    double: doubleIndices.length
+  };
+
+  /* KM-Verteilung berechnen — adaptiv an Wochenziel */
+  /* Long Run: 30-35% bei normalen Zielen, bis 38% bei großen Volumen (Peak) */
+  const longShareNormal = weekKm >= 80 ? 0.38 : (weekKm >= 60 ? 0.35 : 0.33);
+  let longKm = slotCount.long > 0
+    ? Math.round(weekKm * (trainingSlots.includes('long_short') ? 0.25 : longShareNormal))
+    : 0;
+  let qualityKm = slotCount.quality > 0 ? Math.round(weekKm * 0.18) : 0;
+  let remainingKm = Math.max(0, weekKm - longKm - qualityKm);
+
+  /* Caps adaptiv: bei höheren Wochenzielen müssen Easy-Sessions länger werden dürfen */
+  const MAX_EASY = weekKm >= 90 ? 22 : (weekKm >= 70 ? 19 : 16);
+  const MAX_DOUBLE = weekKm >= 90 ? 14 : (weekKm >= 70 ? 12 : 10);
+  const MAX_SHORT = weekKm >= 70 ? 10 : 8;
+  const MIN_EASY = 5;
+
+  /* Verfügbare KM-Kapazität pro Slot-Typ */
+  let capacity = easyIndices.length * MAX_EASY + doubleIndices.length * MAX_DOUBLE;
+
+  /* Wenn Kapazität nicht reicht (mit 10% Puffer), Tag-Schichten als Short-Slots öffnen */
+  let targetCapacity = Math.ceil(remainingKm * 1.1);
+  if(capacity < targetCapacity){
+    for(const i of idx.tag){
+      if(trainingSlots[i] === null){
+        trainingSlots[i] = 'easy_short';
+        easyIndices.push(i);
+        capacity += MAX_SHORT;
+        if(capacity >= targetCapacity) break;
+      }
+    }
+  }
+
+  /* V-Schichten als Notlösung — auch hier mit Puffer */
+  if(capacity < targetCapacity){
+    for(const i of idx.v){
+      if(trainingSlots[i] === null){
+        trainingSlots[i] = 'easy_short';
+        easyIndices.push(i);
+        capacity += MAX_SHORT;
+        if(capacity >= targetCapacity) break;
+      }
+    }
+  }
+
+  /* SCHRITT 2b: Restliches Defizit auf Long Run + Quality umverteilen */
+  let stillMissing = remainingKm - capacity;
+  if(stillMissing > 0 && slotCount.long > 0){
+    /* Long Run kann bis 45% des Wochenziels wachsen wenn Defizit besteht */
+    const maxLongKm = Math.round(weekKm * 0.45);
+    const addToLong = Math.min(stillMissing, maxLongKm - longKm);
+    if(addToLong > 0){
+      longKm += addToLong;
+      remainingKm -= addToLong;
+      stillMissing -= addToLong;
+    }
+  }
+  if(stillMissing > 0 && slotCount.quality > 0){
+    /* Quality kann bis 25% wachsen */
+    const maxQualityKm = Math.round(weekKm * 0.25);
+    const addToQuality = Math.min(stillMissing, maxQualityKm - qualityKm);
+    if(addToQuality > 0){
+      qualityKm += addToQuality;
+      remainingKm -= addToQuality;
+    }
+  }
+
+  /* Standard-Slots auffüllen */
+  dayShifts.forEach((s,i) => {
+    if(trainingSlots[i] === null) trainingSlots[i] = 'rest';
+  });
+
+  /* ===== SCHRITT 3: KM exakt verteilen =====
+     Strategie: Erst Doppel-Slots (bis MAX_DOUBLE) und Short-Slots (bis MAX_SHORT) auffüllen,
+     dann Rest auf Long-Easy-Slots (bis MAX_EASY) verteilen */
+  const easyKmPerSlot = {};
+  if(remainingKm > 0){
+    let kmLeft = remainingKm;
+
+    /* Erst alle Slots auf MIN_EASY initialisieren */
+    const allRunSlots = [...easyIndices, ...doubleIndices];
+    allRunSlots.forEach(i => { easyKmPerSlot[i] = MIN_EASY; kmLeft -= MIN_EASY; });
+
+    /* Wenn negativ → KM zu niedrig für alle Slots, slots reduzieren */
+    if(kmLeft < 0){
+      /* Slots in umgekehrter Reihenfolge auf 0 setzen bis kmLeft >= 0 */
+      const orderedToRemove = [
+        ...easyIndices.filter(i => trainingSlots[i] === 'easy_short'),
+        ...doubleIndices.slice().reverse(),
+        ...easyIndices.filter(i => trainingSlots[i] === 'easy').slice().reverse()
+      ];
+      for(const i of orderedToRemove){
+        if(kmLeft >= 0) break;
+        kmLeft += easyKmPerSlot[i];
+        delete easyKmPerSlot[i];
+        /* Slot zurücksetzen */
+        if(trainingSlots[i] === 'easy_short' || trainingSlots[i] === 'easy'){
+          trainingSlots[i] = 'rest';
+          const ei = easyIndices.indexOf(i);
+          if(ei >= 0) easyIndices.splice(ei, 1);
+        } else {
+          /* Doppel-Tag: Lauf weg, Kraft bleibt */
+          const di = doubleIndices.indexOf(i);
+          if(di >= 0) doubleIndices.splice(di, 1);
+        }
+      }
+    }
+
+    /* Restliche KM auf Slots verteilen, gemäß Caps */
+    /* Reihenfolge: erst Short-Slots auf MAX_SHORT bringen,
+       dann Doppel-Slots auf MAX_DOUBLE,
+       dann lange Easy auf MAX_EASY */
+    const fillOrder = [
+      { ids: easyIndices.filter(i => trainingSlots[i] === 'easy_short'), max: MAX_SHORT },
+      { ids: doubleIndices, max: MAX_DOUBLE },
+      { ids: easyIndices.filter(i => trainingSlots[i] === 'easy'), max: MAX_EASY }
+    ];
+
+    /* Gleichmäßig auffüllen, runden-basiert */
+    let safety = 0;
+    while(kmLeft > 0 && safety++ < 200){
+      let added = false;
+      for(const group of fillOrder){
+        for(const i of group.ids){
+          if(kmLeft <= 0) break;
+          if(easyKmPerSlot[i] < group.max){
+            easyKmPerSlot[i]++;
+            kmLeft--;
+            added = true;
+          }
+        }
+      }
+      if(!added) break;
+    }
+  }
+
+  /* ===== SCHRITT 4: Output rendern ===== */
+  const week = dayShifts.map((s, i) => {
+    const isDouble = doubleIndices.includes(i);
+    return decideTrainingV2(s, trainingSlots[i], phase, weekKm, {
+      longKm, qualityKm, easyKmPerSlot, easyIdx: i, isDouble
+    });
+  });
+
+  // Statistik
+  let totalKm = 0, runs = 0, lifts = 0;
+  week.forEach((t, i) => {
+    if(t.type === 'long' || t.type === 'run'){
+      runs++;
+      const m = t.text.match(/(\d+)\s*km/);
+      if(m) totalKm += parseInt(m[1]);
+    }
+    if(t.type === 'strength'){
+      lifts++;
+      /* Bei Doppel-Sessions ist Easy-Run im Strength-Tag enthalten */
+      if(doubleIndices.includes(i)){
+        runs++;
+        const m = t.text.match(/EASY\s+(\d+)\s*km/);
+        if(m) totalKm += parseInt(m[1]);
+      }
+    }
+  });
+
+  // DOM Update
+  const grid = document.getElementById('weekGrid');
+  grid.innerHTML = '';
+  days.forEach((d,i) => {
+    const t = week[i];
+    const div = document.createElement('div');
+    div.className = 'day-card ' + (t.type === 'rest' ? 'rest' : t.type === 'long' ? 'long' : t.type === 'strength' ? 'strength' : '');
+    div.innerHTML = `
+      <div class="dn">${d}</div>
+      <select data-day="${d}">
+        ${shifts.map(sh => `<option value="${sh.v}" ${dayShifts[i]===sh.v?'selected':''}>${sh.label}</option>`).join('')}
+      </select>
+      <div class="out">${t.text}</div>
+    `;
+    grid.appendChild(div);
+  });
+
+  // Summary mit Ziel/Ist-Vergleich
+  const deltaKm = totalKm - weekKm;
+  const kmStatus = Math.abs(deltaKm) <= 3 ? 'ok' : deltaKm < 0 ? 'low' : 'high';
+  const kmColor = kmStatus === 'ok' ? 'var(--good)' : kmStatus === 'low' ? 'var(--warn)' : 'var(--accent)';
+  const kmIcon = kmStatus === 'ok' ? '✓' : deltaKm < 0 ? '↓' : '↑';
+
+  document.getElementById('sumKm').innerHTML =
+    `<span style="color:${kmColor}">${totalKm}</span><span class="unit">/ ${weekKm}km ${kmIcon}</span>`;
+  document.getElementById('sumRuns').innerHTML = `${runs}<span class="unit">×</span>`;
+  document.getElementById('sumLift').innerHTML = `${lifts}<span class="unit">×</span>`;
+
+  // Belastungs-Score
+  const load = runs * 1.5 + lifts * 1.2 + (week.find(w=>w.type==='long') ? 2 : 0);
+  let label = 'Niedrig', color = 'var(--good)';
+  if(load > 6){ label = 'Hoch'; color = 'var(--accent)'; }
+  else if(load > 4){ label = 'Mittel'; color = 'var(--accent-2)'; }
+  document.getElementById('sumLoad').innerHTML = `<span style="color:${color};font-size:24px">${label}</span>`;
+
+  /* Hinweis-Box: wenn Defizit nicht aufzulösen war */
+  showVolumeWarning(totalKm, weekKm, dayShifts);
+
+  // Re-attach listeners auf neue selects
+  document.querySelectorAll('.day-card select').forEach(sel => {
+    sel.addEventListener('change', generateWeek);
+  });
+}
+
+/* Neue Training-Decision-Funktion mit präziser KM-Steuerung */
+function decideTrainingV2(shift, slot, phase, weekKm, kmAlloc){
+  const cfg = phaseConfig[phase];
+  const { longKm, qualityKm, easyKmPerSlot, easyIdx, isDouble } = kmAlloc;
+  const doubleKm = easyKmPerSlot[easyIdx];
+
+  /* === LONG RUN === */
+  if(slot === 'long'){
+    const minutes = Math.round(longKm * 6); // ~6 min/km Z2 Schätzung
+    return { type:'long', text:`LONG RUN ${longKm}km\n~${minutes} Min · Z2 strikt\nletzte 30 Min Z3 möglich\nIn-Run Fueling testen!` };
+  }
+  if(slot === 'long_short'){
+    /* Notfall: Long auf Nacht-Tag, vor Schicht, gekürzt */
+    return { type:'long', text:`LONG RUN ${longKm}km\n14:00 Uhr · Z2 streng\nKürzer wegen Nachtschicht\nNap danach!` };
+  }
+
+  /* === QUALITY === */
+  if(slot === 'quality'){
+    if(phase === 'base') return { type:'run', text:`TEMPO ${qualityKm}km\n10 EinL · 20\' Z3 · 10 AusL\nZ3 = anstrengend kontrolliert` };
+    if(phase === 'build') return { type:'run', text:`SCHWELLE ${qualityKm}km\n15 EinL · 5×6\' Z4 / 2\' P · 10 AusL` };
+    if(phase === 'peak') return { type:'run', text:`BERG-INTERVALLE ${qualityKm}km\n15 EinL · 10×60s steil · 10 AusL\nRPE 9 bergauf` };
+    if(phase === 'taper') return { type:'run', text:`AKTIVIERUNG ${qualityKm}km\n5×30s Steigerungen\nBeine wachhalten` };
+  }
+
+  /* === KRAFT (mit oder ohne Doppel) === */
+  if(slot === 'strengthA'){
+    let main = shift === 'nacht'
+      ? `KRAFT A · 40\'\n14:00 Uhr · 70% Volumen\nSquat / Bench (leicht)`
+      : `KRAFT A · 60\'\nSquat / Bench / Lunges\nOHP / Core / Calves`;
+    if(isDouble && doubleKm){
+      const mins = Math.round(doubleKm * 6);
+      return { type:'strength', text:`DOPPEL · ${doubleKm + qualityKm > 0 ? doubleKm : doubleKm}km\nAM: EASY ${doubleKm}km · ${mins}\'\nPM: ${main.split('\\n').slice(0,2).join(' · ')}\n+ 6h Pause zwischen!` };
+    }
+    return { type:'strength', text:main };
+  }
+  if(slot === 'strengthB'){
+    let main = shift === 'nacht'
+      ? `KRAFT B · 40\'\n14:00 Uhr · 70% Volumen\nDeadlift / Pull-ups (leicht)`
+      : `KRAFT B · 60\'\nDeadlift / Pull-ups\nRDL / Row / Carries`;
+    if(isDouble && doubleKm){
+      const mins = Math.round(doubleKm * 6);
+      return { type:'strength', text:`DOPPEL · ${doubleKm}km Lauf\nAM: EASY ${doubleKm}km · ${mins}\'\nPM: KRAFT B 60\'\n+ 6h Pause zwischen!` };
+    }
+    return { type:'strength', text:main };
+  }
+
+  /* === EASY RUNS === */
+  if(slot === 'easy'){
+    const km = easyKmPerSlot[easyIdx] || 8;
+    const minutes = Math.round(km * 6);
+    if(shift === 'nacht'){
+      return { type:'run', text:`EASY ${km}km\n15:00 Uhr · ~${minutes}\' Z2\nDann Nap → Schicht` };
+    }
+    return { type:'run', text:`EASY ${km}km\n~${minutes} Min · Z2 streng\nNase-Atmung möglich` };
+  }
+  if(slot === 'easy_short'){
+    const km = easyKmPerSlot[easyIdx] || 6;
+    const minutes = Math.round(km * 6);
+    if(shift === 'tag'){
+      return { type:'run', text:`EASY ${km}km\n05:30 Uhr · ~${minutes}\' Z2\nVor der Tagschicht` };
+    }
+    if(shift === 'v'){
+      return { type:'run', text:`EASY ${km}km\nAbend nach V-Schicht?\nNur wenn Energie da · Z2` };
+    }
+    return { type:'run', text:`EASY ${km}km\n~${minutes} Min · Z2 sehr locker` };
+  }
+
+  /* === SCHICHT-DEFAULTS bei rest === */
+  if(shift === 'schlaf') return { type:'rest', text:'RUHE\nSchlaf hat Vorrang.\nAbends ggf. 10 Min Mobility.' };
+  if(shift === 'tag') return { type:'mobility', text:'MOBILITY 20\'\nVor Schicht 06:00\nHüfte + Sprunggelenk + Core' };
+  if(shift === 'v') return { type:'rest', text:'RUHE / SPAZIEREN\n12h Schicht — keine Belastung.\nAbends 15 Min Spaziergang.' };
+  if(shift === 'nacht') return { type:'rest', text:'RUHE\nVor Nachtschicht erholen.' };
+  return { type:'rest', text:'RUHE' };
+}
+
+function showVolumeWarning(totalKm, weekKm, dayShifts){
+  const existing = document.getElementById('volumeWarning');
+  if(existing) existing.remove();
+
+  const delta = weekKm - totalKm;
+  if(Math.abs(delta) <= 3) return; // Im Toleranzbereich, kein Hinweis
+
+  const summary = document.getElementById('weekSummary');
+  const warning = document.createElement('div');
+  warning.id = 'volumeWarning';
+  warning.className = 'callout';
+  warning.style.marginTop = '14px';
+  warning.style.marginBottom = '0';
+
+  if(delta > 3){
+    /* Defizit: zu wenige Slots verfügbar */
+    const freiCount = dayShifts.filter(s => s === 'frei').length;
+    const nachtCount = dayShifts.filter(s => s === 'nacht').length;
+    warning.innerHTML = `<strong>⚠ ${delta} km Defizit:</strong> Mit ${freiCount}× Frei + ${nachtCount}× Nacht ist das Wochenziel ${weekKm} km knapp. Optionen: <em>(a)</em> mehr Frei-Tage einplanen, <em>(b)</em> manuell auf ${totalKm} km reduzieren, <em>(c)</em> einen Tag-/V-Schicht-Tag durch Frei tauschen falls möglich.`;
+  } else {
+    /* Überschuss: zu viel Volumen */
+    warning.innerHTML = `<strong>↑ ${Math.abs(delta)} km über Ziel:</strong> Aktuelle Schichten erlauben mehr Volumen als geplant. Du kannst entweder einen Easy-Run weglassen oder das KM-Ziel manuell erhöhen.`;
+  }
+
+  summary.parentNode.insertBefore(warning, summary.nextSibling);
+}
+
+/* Initialisierung */
+function initWeek(){
+  const grid = document.getElementById('weekGrid');
+  grid.innerHTML = '';
+  // Default: Mo Tag, Di V, Mi Frei, Do Frei, Fr Nacht, Sa Schlaf, So Frei
+  const defaults = ['tag','v','frei','frei','nacht','schlaf','frei'];
+  days.forEach((d,i) => {
+    const div = document.createElement('div');
+    div.className = 'day-card';
+    div.innerHTML = `
+      <div class="dn">${d}</div>
+      <select data-day="${d}">
+        ${shifts.map(sh => `<option value="${sh.v}" ${defaults[i]===sh.v?'selected':''}>${sh.label}</option>`).join('')}
+      </select>
+      <div class="out">–</div>
+    `;
+    grid.appendChild(div);
+  });
+  document.querySelectorAll('.day-card select').forEach(sel => {
+    sel.addEventListener('change', generateWeek);
+  });
+  document.getElementById('phaseSelect').addEventListener('change', generateWeek);
+  document.getElementById('kmTarget').addEventListener('change', generateWeek);
+
+  /* Datum-Defaults: Start = heute, Race = heute + 14 Monate */
+  const startInput = document.getElementById('startDate');
+  const raceInput = document.getElementById('raceDate');
+  const today = new Date();
+  startInput.valueAsDate = today;
+  const race = new Date(today);
+  race.setMonth(race.getMonth() + 14);
+  raceInput.valueAsDate = race;
+
+  startInput.addEventListener('change', generateWeek);
+  raceInput.addEventListener('change', generateWeek);
+
+  /* Manuell-Toggle */
+  const toggleBtn = document.getElementById('manualToggle');
+  const overrideBox = document.getElementById('manualOverride');
+  toggleBtn.addEventListener('click', () => {
+    manualMode = !manualMode;
+    toggleBtn.classList.toggle('active', manualMode);
+    toggleBtn.textContent = manualMode ? 'Auto-Modus' : 'Manuell anpassen';
+    overrideBox.style.display = manualMode ? 'block' : 'none';
+    /* Beim Wechsel zu Manuell: aktuelle Auto-Werte als Startwerte übernehmen */
+    if(manualMode){
+      const auto = computeAutoState();
+      if(auto.valid){
+        document.getElementById('phaseSelect').value = auto.phase;
+        const km = Math.round(auto.weekKm / 10) * 10;
+        const select = document.getElementById('kmTarget');
+        const closest = [...select.options].reduce((a,b) =>
+          Math.abs(parseInt(b.value) - km) < Math.abs(parseInt(a.value) - km) ? b : a
+        );
+        select.value = closest.value;
+      }
+    }
+    generateWeek();
+  });
+
+  generateWeek();
+}
+
+/* ============================================
+   AUTO-STATE: Phase + Wochen-KM aus Datum berechnen
+   ============================================ */
+let manualMode = false;
+
+function computeAutoState(){
+  const startInput = document.getElementById('startDate');
+  const raceInput = document.getElementById('raceDate');
+  if(!startInput.value || !raceInput.value) return { valid:false };
+
+  const start = new Date(startInput.value);
+  const race = new Date(raceInput.value);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  start.setHours(0,0,0,0);
+  race.setHours(0,0,0,0);
+
+  if(race <= start) return { valid:false, error:'Renndatum muss nach Startdatum liegen' };
+
+  const totalDays = Math.round((race - start) / 86400000);
+  const totalWeeks = Math.max(1, Math.round(totalDays / 7));
+  const elapsedDays = Math.round((today - start) / 86400000);
+  const currentWeek = Math.max(1, Math.floor(elapsedDays / 7) + 1);
+  const daysToRace = Math.round((race - today) / 86400000);
+  const weeksToRace = Math.max(0, Math.ceil(daysToRace / 7));
+
+  /* Phasen-Aufteilung anhand Gesamtwochen
+     Base 30%, Build 40%, Peak 25%, Taper 5% (mind. 2 Wo) */
+  const taperWeeks = Math.max(2, Math.round(totalWeeks * 0.06));
+  const peakWeeks = Math.max(4, Math.round(totalWeeks * 0.22));
+  const buildWeeks = Math.max(6, Math.round(totalWeeks * 0.42));
+  const baseWeeks = Math.max(4, totalWeeks - taperWeeks - peakWeeks - buildWeeks);
+
+  const baseEnd = baseWeeks;
+  const buildEnd = baseEnd + buildWeeks;
+  const peakEnd = buildEnd + peakWeeks;
+
+  let phase, phaseLabel, phaseDesc, weekInPhase, totalInPhase;
+  if(currentWeek <= baseEnd){
+    phase = 'base'; phaseLabel = 'BASE';
+    phaseDesc = 'Aufbau aerobe Basis · Volumen langsam steigern · Kraft 2×';
+    weekInPhase = currentWeek;
+    totalInPhase = baseWeeks;
+  } else if(currentWeek <= buildEnd){
+    phase = 'build'; phaseLabel = 'BUILD';
+    phaseDesc = 'Volumen + erste Quality-Sessions · Hypertrophie-Kraft · erste lange Trail-Runs';
+    weekInPhase = currentWeek - baseEnd;
+    totalInPhase = buildWeeks;
+  } else if(currentWeek <= peakEnd){
+    phase = 'peak'; phaseLabel = 'PEAK';
+    phaseDesc = 'Spezifisch · Back-to-Back Long Runs · Race-Pace · Nachtläufe testen';
+    weekInPhase = currentWeek - buildEnd;
+    totalInPhase = peakWeeks;
+  } else {
+    phase = 'taper'; phaseLabel = 'TAPER';
+    phaseDesc = 'Volumen halbieren · Intensität halten · Schlaf, Carbs, Mental';
+    weekInPhase = currentWeek - peakEnd;
+    totalInPhase = taperWeeks;
+  }
+
+  /* KM-Progression: linear in jeder Phase mit 4-Wochen-Welle (Wo3 = Peak, Wo4 = Deload 70%) */
+  const kmTargets = {
+    base:  { start: 30, end: 55 },
+    build: { start: 55, end: 80 },
+    peak:  { start: 80, end: 100 },
+    taper: { start: 60, end: 30 }
+  };
+  const t = kmTargets[phase];
+  const phaseProgress = totalInPhase > 1 ? (weekInPhase - 1) / (totalInPhase - 1) : 0;
+  let weekKm = Math.round(t.start + (t.end - t.start) * phaseProgress);
+
+  /* Wellen-Modulation (außer bei Wiedereinstieg in Base Wo 1-6 und im Taper) */
+  const useWave = !(phase === 'base' && currentWeek <= 6) && phase !== 'taper';
+  if(useWave){
+    const wavePos = (currentWeek - 1) % 4;
+    if(wavePos === 1) weekKm = Math.round(weekKm * 1.05);   // Wo 2: +5%
+    else if(wavePos === 2) weekKm = Math.round(weekKm * 1.12); // Wo 3: Peak +12%
+    else if(wavePos === 3) weekKm = Math.round(weekKm * 0.7);  // Wo 4: Deload -30%
+  }
+
+  /* Race-Week Override */
+  if(daysToRace <= 7 && daysToRace >= 0){
+    weekKm = 25;
+  }
+
+  const overallProgress = Math.min(100, Math.max(0, (currentWeek / totalWeeks) * 100));
+
+  return {
+    valid:true,
+    phase, phaseLabel, phaseDesc,
+    weekKm,
+    currentWeek, totalWeeks,
+    weekInPhase, totalInPhase,
+    daysToRace, weeksToRace,
+    overallProgress,
+    isPostRace: daysToRace < 0,
+    isPreStart: elapsedDays < 0
+  };
+}
+
+function updateAutoStatus(){
+  const auto = computeAutoState();
+  const weekEl = document.getElementById('autoWeek');
+  const phaseEl = document.getElementById('autoPhase');
+  const kmEl = document.getElementById('autoKm');
+  const cdEl = document.getElementById('autoCountdown');
+  const fillEl = document.getElementById('progressFill');
+  const descEl = document.getElementById('phaseDescription');
+
+  if(!auto.valid){
+    weekEl.textContent = '–';
+    phaseEl.textContent = '–';
+    kmEl.textContent = '–';
+    cdEl.textContent = '–';
+    fillEl.style.width = '0%';
+    descEl.textContent = auto.error || 'Trage Start- und Renndatum ein';
+    return;
+  }
+
+  if(auto.isPreStart){
+    weekEl.textContent = 'Pre';
+    descEl.textContent = `Training startet in ${Math.abs(auto.currentWeek)} Wo. Locker bleiben bis dahin.`;
+  } else {
+    weekEl.innerHTML = `${auto.currentWeek}<span style="font-size:14px;color:var(--ink-dim)">/${auto.totalWeeks}</span>`;
+  }
+
+  phaseEl.textContent = auto.phaseLabel;
+  phaseEl.className = 'auto-val ' + (
+    auto.phase === 'base' ? 'accent' :
+    auto.phase === 'build' ? 'yellow' :
+    auto.phase === 'peak' ? 'purple' : 'green'
+  );
+
+  kmEl.innerHTML = `${auto.weekKm}<span style="font-size:14px;color:var(--ink-dim)"> km</span>`;
+
+  if(auto.isPostRace){
+    cdEl.innerHTML = `<span style="color:var(--good)">Done!</span>`;
+    descEl.textContent = 'Rennen vorbei. Mindestens 2 Wochen Recovery, dann neuer Plan.';
+  } else if(auto.daysToRace <= 14){
+    cdEl.innerHTML = `${auto.daysToRace}<span style="font-size:14px;color:var(--ink-dim)"> Tage</span>`;
+  } else {
+    cdEl.innerHTML = `${auto.weeksToRace}<span style="font-size:14px;color:var(--ink-dim)"> Wo</span>`;
+  }
+
+  fillEl.style.width = auto.overallProgress + '%';
+
+  if(!auto.isPreStart && !auto.isPostRace){
+    descEl.innerHTML = `<strong style="color:var(--ink)">${auto.phaseLabel} · Wo ${auto.weekInPhase}/${auto.totalInPhase}</strong> — ${auto.phaseDesc}`;
+  }
+}
+
+initWeek();
+
+/* ============================================
+   TRACKER (Heute-Fokus)
+   ============================================ */
+const STORAGE_KEY = 'hybrid100k_tracker_v1';
+
+const dayNames = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const dayShort = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+const monthShort = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+
+function todayKey(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function fmtDate(key){
+  const [y,m,d] = key.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  return { day: d, month: monthShort[m-1], weekday: dayShort[dt.getDay()] };
+}
+
+function loadEntries(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function saveEntries(entries){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
+  catch(e){ console.warn('Speichern fehlgeschlagen', e); }
+}
+
+function renderTodayDate(){
+  const d = new Date();
+  const el = document.getElementById('todayDate');
+  if(el) el.textContent = `${dayNames[d.getDay()]}, ${d.getDate()}. ${monthShort[d.getMonth()]}`;
+}
+
+function loadTodayIntoForm(){
+  const entries = loadEntries();
+  const e = entries[todayKey()];
+  document.getElementById('todaySleep').value = e?.sleep ?? '';
+  document.getElementById('todayWeight').value = e?.weight ?? '';
+  document.getElementById('todayShift').value = e?.shift ?? '';
+  document.getElementById('todayNote').value = e?.note ?? '';
+}
+
+function saveTodayEntry(){
+  const sleep = parseFloat(document.getElementById('todaySleep').value);
+  const weight = parseFloat(document.getElementById('todayWeight').value);
+  const shift = document.getElementById('todayShift').value;
+  const note = document.getElementById('todayNote').value.trim();
+
+  /* Mindestens ein Wert muss gesetzt sein */
+  if(isNaN(sleep) && isNaN(weight) && !shift && !note){
+    flashSaveStatus('Nichts einzutragen', false);
+    return;
+  }
+
+  const entries = loadEntries();
+  entries[todayKey()] = {
+    sleep: isNaN(sleep) ? null : sleep,
+    weight: isNaN(weight) ? null : weight,
+    shift: shift || null,
+    note: note || null,
+    ts: Date.now()
+  };
+  saveEntries(entries);
+  flashSaveStatus('✓ Gespeichert', true);
+  renderHistory();
+  renderAverages();
+  renderStreak();
+}
+
+function flashSaveStatus(msg, success){
+  const el = document.getElementById('saveStatus');
+  el.textContent = msg;
+  el.style.color = success ? 'var(--good)' : 'var(--warn)';
+  el.classList.add('show');
+  clearTimeout(flashSaveStatus._t);
+  flashSaveStatus._t = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function deleteEntry(key){
+  if(!confirm('Eintrag wirklich löschen?')) return;
+  const entries = loadEntries();
+  delete entries[key];
+  saveEntries(entries);
+  renderHistory();
+  renderAverages();
+  renderStreak();
+  if(key === todayKey()) loadTodayIntoForm();
+}
+
+function shiftClass(shift){
+  if(!shift) return '';
+  const s = shift.toLowerCase();
+  if(s.includes('frei')) return 'frei';
+  if(s.includes('nacht')) return 'nacht';
+  if(s.includes('schlaf')) return 'schlaf';
+  if(s.includes('v-')) return 'v';
+  return '';
+}
+
+function renderHistory(){
+  const list = document.getElementById('historyList');
+  const entries = loadEntries();
+  const keys = Object.keys(entries).sort().reverse();
+
+  if(keys.length === 0){
+    list.innerHTML = '<div class="history-empty">Noch keine Einträge. Speichere oben deinen ersten Tag.</div>';
+    return;
+  }
+
+  list.innerHTML = keys.map(key => {
+    const e = entries[key];
+    const f = fmtDate(key);
+    const isToday = key === todayKey();
+    const parts = [];
+    if(e.sleep != null) parts.push(`<span>💤 <strong>${e.sleep}h</strong></span>`);
+    if(e.weight != null) parts.push(`<span>⚖️ <strong>${e.weight} kg</strong></span>`);
+    if(e.shift) parts.push(`<span class="history-shift ${shiftClass(e.shift)}">${e.shift}</span>`);
+
+    return `
+      <div class="history-row">
+        <div class="history-date">
+          ${f.day}. ${f.month}
+          <small>${isToday ? 'Heute' : f.weekday}</small>
+        </div>
+        <div class="history-data">${parts.join('') || '<span style="color:var(--ink-mute)">—</span>'}</div>
+        <button class="history-del" data-key="${key}" title="Löschen">×</button>
+        ${e.note ? `<div class="history-note">„${escapeHtml(e.note)}"</div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  list.querySelectorAll('.history-del').forEach(btn => {
+    btn.addEventListener('click', () => deleteEntry(btn.dataset.key));
+  });
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderAverages(){
+  const entries = loadEntries();
+  const today = new Date();
+  const sevenAgo = new Date(today);
+  sevenAgo.setDate(today.getDate() - 6);
+
+  let sumSleep = 0, cntSleep = 0, sumWeight = 0, cntWeight = 0, cntDays = 0;
+
+  Object.keys(entries).forEach(key => {
+    const [y,m,d] = key.split('-').map(Number);
+    const dt = new Date(y, m-1, d);
+    if(dt >= sevenAgo && dt <= today){
+      const e = entries[key];
+      cntDays++;
+      if(e.sleep != null){ sumSleep += e.sleep; cntSleep++; }
+      if(e.weight != null){ sumWeight += e.weight; cntWeight++; }
+    }
+  });
+
+  document.getElementById('avgSleep').innerHTML = cntSleep > 0
+    ? `${(sumSleep/cntSleep).toFixed(1)}<span class="avg-unit"> h</span>`
+    : `–<span class="avg-unit"> h</span>`;
+  document.getElementById('avgWeight').innerHTML = cntWeight > 0
+    ? `${(sumWeight/cntWeight).toFixed(1)}<span class="avg-unit"> kg</span>`
+    : `–<span class="avg-unit"> kg</span>`;
+  document.getElementById('avgCount').innerHTML = `${cntDays}<span class="avg-unit"> /7</span>`;
+}
+
+function renderStreak(){
+  const entries = loadEntries();
+  let streak = 0;
+  const cursor = new Date();
+  cursor.setHours(0,0,0,0);
+  /* Wenn heute kein Eintrag, beginnt Streak ab gestern */
+  while(true){
+    const key = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
+    if(entries[key]){
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      /* Erlaube heute leer ohne Streak-Bruch */
+      if(streak === 0 && key === todayKey()){
+        cursor.setDate(cursor.getDate() - 1);
+        continue;
+      }
+      break;
+    }
+  }
+  const num = document.querySelector('.streak-num');
+  if(num) num.textContent = streak;
+}
+
+function exportJson(){
+  const entries = loadEntries();
+  const data = JSON.stringify(entries, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `hybrid100k-tracker-${todayKey()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  /* Markiere letzten Backup-Zeitpunkt */
+  localStorage.setItem('hybrid100k_last_backup', String(Date.now()));
+  hideBackupBanner();
+  flashSaveStatus('✓ Backup erstellt', true);
+}
+
+function importJson(ev){
+  const file = ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const imported = JSON.parse(e.target.result);
+      if(typeof imported !== 'object' || imported === null){
+        throw new Error('Ungültiges Format');
+      }
+      const current = loadEntries();
+      const importCount = Object.keys(imported).length;
+      const conflicts = Object.keys(imported).filter(k => current[k]).length;
+      let msg = `${importCount} Einträge importieren?`;
+      if(conflicts > 0) msg += `\n${conflicts} bestehende Tage werden überschrieben.`;
+      if(!confirm(msg)){ ev.target.value = ''; return; }
+      const merged = { ...current, ...imported };
+      saveEntries(merged);
+      renderHistory();
+      renderAverages();
+      renderStreak();
+      loadTodayIntoForm();
+      flashSaveStatus(`✓ ${importCount} Einträge importiert`, true);
+    } catch(err){
+      flashSaveStatus('✗ Datei ungültig', false);
+    }
+    ev.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+/* ============================================
+   BACKUP-REMINDER + PWA DETECTION
+   ============================================ */
+const BACKUP_KEY = 'hybrid100k_last_backup';
+const BACKUP_SNOOZE = 'hybrid100k_backup_snooze';
+const PWA_TIP_DISMISSED = 'hybrid100k_pwa_tip_dismissed';
+
+function daysSinceLastBackup(){
+  const last = parseInt(localStorage.getItem(BACKUP_KEY) || '0');
+  if(!last){
+    /* Wenn nie gesichert, zähle ab erstem Eintrag */
+    const entries = loadEntries();
+    const keys = Object.keys(entries).sort();
+    if(keys.length === 0) return 0;
+    const [y,m,d] = keys[0].split('-').map(Number);
+    const first = new Date(y, m-1, d).getTime();
+    return Math.floor((Date.now() - first) / 86400000);
+  }
+  return Math.floor((Date.now() - last) / 86400000);
+}
+
+function checkBackupReminder(){
+  const banner = document.getElementById('backupBanner');
+  const entries = loadEntries();
+  const entryCount = Object.keys(entries).length;
+
+  /* Keine Einträge → kein Banner */
+  if(entryCount === 0){
+    banner.style.display = 'none';
+    return;
+  }
+
+  /* Snooze aktiv? */
+  const snoozeUntil = parseInt(localStorage.getItem(BACKUP_SNOOZE) || '0');
+  if(snoozeUntil > Date.now()){
+    banner.style.display = 'none';
+    return;
+  }
+
+  const days = daysSinceLastBackup();
+  if(days < 7){
+    banner.style.display = 'none';
+    return;
+  }
+
+  /* Banner zeigen */
+  const title = document.getElementById('backupTitle');
+  const desc = document.getElementById('backupDesc');
+  banner.style.display = 'flex';
+
+  if(days >= 14){
+    banner.classList.add('urgent');
+    title.textContent = `${days} Tage ohne Backup`;
+    desc.textContent = `${entryCount} Einträge ungesichert. iOS kann Daten ohne Vorwarnung löschen.`;
+  } else {
+    banner.classList.remove('urgent');
+    title.textContent = `Backup empfohlen · ${days}T`;
+    desc.textContent = `${entryCount} Einträge. Sichere die Daten als JSON-Datei in iCloud/Dateien.`;
+  }
+}
+
+function hideBackupBanner(){
+  document.getElementById('backupBanner').style.display = 'none';
+}
+
+function snoozeBackup(){
+  /* 3 Tage stumm */
+  localStorage.setItem(BACKUP_SNOOZE, String(Date.now() + 3 * 86400000));
+  hideBackupBanner();
+}
+
+function dismissBackupBanner(){
+  /* 1 Tag stumm */
+  localStorage.setItem(BACKUP_SNOOZE, String(Date.now() + 86400000));
+  hideBackupBanner();
+}
+
+function detectPwaMode(){
+  /* iOS Safari Standalone */
+  const isStandalone =
+    window.navigator.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+  const dismissed = localStorage.getItem(PWA_TIP_DISMISSED) === '1';
+  /* Nur auf Mobile zeigen */
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const tip = document.getElementById('pwaTip');
+  if(tip && !isStandalone && !dismissed && isMobile){
+    tip.style.display = 'flex';
+  }
+}
+
+/* Init Tracker */
+function initTracker(){
+  renderTodayDate();
+  loadTodayIntoForm();
+  renderHistory();
+  renderAverages();
+  renderStreak();
+  checkBackupReminder();
+  detectPwaMode();
+
+  document.getElementById('saveToday').addEventListener('click', saveTodayEntry);
+  document.getElementById('exportBtn').addEventListener('click', exportJson);
+  document.getElementById('importInput').addEventListener('change', importJson);
+  document.getElementById('backupNow').addEventListener('click', exportJson);
+  document.getElementById('backupSnooze').addEventListener('click', snoozeBackup);
+  document.getElementById('backupClose').addEventListener('click', dismissBackupBanner);
+
+  const pwaClose = document.getElementById('pwaTipClose');
+  if(pwaClose){
+    pwaClose.addEventListener('click', () => {
+      localStorage.setItem(PWA_TIP_DISMISSED, '1');
+      document.getElementById('pwaTip').style.display = 'none';
+    });
+  }
+
+  /* Auto-save bei Verlassen des Feldes */
+  ['todaySleep','todayWeight','todayShift'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+      saveTodayEntryQuiet();
+    });
+  });
+}
+
+function saveTodayEntryQuiet(){
+  const sleep = parseFloat(document.getElementById('todaySleep').value);
+  const weight = parseFloat(document.getElementById('todayWeight').value);
+  const shift = document.getElementById('todayShift').value;
+  const note = document.getElementById('todayNote').value.trim();
+  if(isNaN(sleep) && isNaN(weight) && !shift && !note) return;
+  const entries = loadEntries();
+  entries[todayKey()] = {
+    sleep: isNaN(sleep) ? null : sleep,
+    weight: isNaN(weight) ? null : weight,
+    shift: shift || null,
+    note: note || null,
+    ts: Date.now()
+  };
+  saveEntries(entries);
+  renderHistory();
+  renderAverages();
+  renderStreak();
+}
+
+initTracker();
+</script>
+
+</body>
+</html>
