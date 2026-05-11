@@ -1574,7 +1574,10 @@ function generateWeek(){
 
   // Re-attach listeners auf neue selects
   document.querySelectorAll('.day-card select').forEach(sel => {
-    sel.addEventListener('change', generateWeek);
+    sel.addEventListener('change', () => {
+      saveBuilderState();
+      generateWeek();
+    });
   });
 }
 
@@ -1684,41 +1687,83 @@ function showVolumeWarning(totalKm, weekKm, dayShifts){
 function initWeek(){
   const grid = document.getElementById('weekGrid');
   grid.innerHTML = '';
+
+  /* Gespeicherte Baukasten-Daten laden */
+  const builderState = loadBuilderState();
+
   // Default: Mo Tag, Di V, Mi Frei, Do Frei, Fr Nacht, Sa Schlaf, So Frei
   const defaults = ['tag','v','frei','frei','nacht','schlaf','frei'];
+  const savedShifts = builderState.shifts || defaults;
   days.forEach((d,i) => {
     const div = document.createElement('div');
     div.className = 'day-card';
+    const dayValue = savedShifts[i] || defaults[i];
     div.innerHTML = `
       <div class="dn">${d}</div>
       <select data-day="${d}">
-        ${shifts.map(sh => `<option value="${sh.v}" ${defaults[i]===sh.v?'selected':''}>${sh.label}</option>`).join('')}
+        ${shifts.map(sh => `<option value="${sh.v}" ${dayValue===sh.v?'selected':''}>${sh.label}</option>`).join('')}
       </select>
       <div class="out">–</div>
     `;
     grid.appendChild(div);
   });
   document.querySelectorAll('.day-card select').forEach(sel => {
-    sel.addEventListener('change', generateWeek);
+    sel.addEventListener('change', () => {
+      saveBuilderState();
+      generateWeek();
+    });
   });
-  document.getElementById('phaseSelect').addEventListener('change', generateWeek);
-  document.getElementById('kmTarget').addEventListener('change', generateWeek);
+  document.getElementById('phaseSelect').addEventListener('change', () => {
+    saveBuilderState();
+    generateWeek();
+  });
+  document.getElementById('kmTarget').addEventListener('change', () => {
+    saveBuilderState();
+    generateWeek();
+  });
 
-  /* Datum-Defaults: Start = heute, Race = heute + 14 Monate */
+  /* Datum-Defaults aus gespeichertem Zustand oder heute / heute + 14 Monate */
   const startInput = document.getElementById('startDate');
   const raceInput = document.getElementById('raceDate');
   const today = new Date();
-  startInput.valueAsDate = today;
-  const race = new Date(today);
-  race.setMonth(race.getMonth() + 14);
-  raceInput.valueAsDate = race;
+  if(builderState.startDate){
+    startInput.value = builderState.startDate;
+  } else {
+    startInput.valueAsDate = today;
+  }
+  if(builderState.raceDate){
+    raceInput.value = builderState.raceDate;
+  } else {
+    const race = new Date(today);
+    race.setMonth(race.getMonth() + 14);
+    raceInput.valueAsDate = race;
+  }
 
-  startInput.addEventListener('change', generateWeek);
-  raceInput.addEventListener('change', generateWeek);
+  startInput.addEventListener('change', () => {
+    saveBuilderState();
+    generateWeek();
+  });
+  raceInput.addEventListener('change', () => {
+    saveBuilderState();
+    generateWeek();
+  });
 
-  /* Manuell-Toggle */
+  /* Manuell-Modus aus gespeichertem Zustand */
+  manualMode = builderState.manualMode || false;
   const toggleBtn = document.getElementById('manualToggle');
   const overrideBox = document.getElementById('manualOverride');
+  if(manualMode){
+    toggleBtn.classList.add('active');
+    toggleBtn.textContent = 'Auto-Modus';
+    overrideBox.style.display = 'block';
+    if(builderState.manualPhase){
+      document.getElementById('phaseSelect').value = builderState.manualPhase;
+    }
+    if(builderState.manualKm){
+      document.getElementById('kmTarget').value = builderState.manualKm;
+    }
+  }
+
   toggleBtn.addEventListener('click', () => {
     manualMode = !manualMode;
     toggleBtn.classList.toggle('active', manualMode);
@@ -1737,10 +1782,41 @@ function initWeek(){
         select.value = closest.value;
       }
     }
+    saveBuilderState();
     generateWeek();
   });
 
   generateWeek();
+}
+
+/* ============================================
+   BAUKASTEN-PERSISTENZ
+   ============================================ */
+const BUILDER_KEY = 'hybrid100k_builder_v1';
+
+function loadBuilderState(){
+  try{
+    const raw = localStorage.getItem(BUILDER_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e){ return {}; }
+}
+
+function saveBuilderState(){
+  try{
+    const shifts = [];
+    document.querySelectorAll('.day-card select').forEach(sel => {
+      shifts.push(sel.value);
+    });
+    const state = {
+      shifts: shifts,
+      startDate: document.getElementById('startDate').value,
+      raceDate: document.getElementById('raceDate').value,
+      manualMode: manualMode,
+      manualPhase: document.getElementById('phaseSelect').value,
+      manualKm: document.getElementById('kmTarget').value
+    };
+    localStorage.setItem(BUILDER_KEY, JSON.stringify(state));
+  } catch(e){ console.warn('Builder save failed', e); }
 }
 
 /* ============================================
@@ -2287,3 +2363,4 @@ initTracker();
 
 </body>
 </html>
+  
